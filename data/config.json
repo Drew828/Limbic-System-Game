@@ -1,0 +1,44 @@
+{
+  "balance": {
+    "stm_capacity": 7,
+    "consolidation_slots": 3,
+    "dream_replay_count": 1,
+    "events_per_day": 10,
+    "memory_decay_per_night": 0.18,
+    "emotional_decay_resist": 0.40,
+    "consolidation_boost": 0.30,
+    "repeat_exposure_boost": 0.15,
+    "false_memory_risk_low": 0.30,
+    "merge_trait_threshold": 0.40,
+    "mastery_max_exposure": 5,
+    "travel_health_max": 100,
+    "travel_health_start": 80,
+    "bad_recall_damage": 15,
+    "good_recall_heal": 8,
+    "no_memory_damage": 20,
+    "total_nights": 15
+  },
+  "progression": {
+    "phases": [
+      {"id": "early",  "nights": [1, 3],   "label": "Encoding",     "max_cues": 2, "context_rules_visible": false},
+      {"id": "mid1",   "nights": [4, 6],   "label": "Reinforcement","max_cues": 3, "context_rules_visible": false},
+      {"id": "mid2",   "nights": [7, 9],   "label": "Contextual",   "max_cues": 4, "context_rules_visible": true},
+      {"id": "late1",  "nights": [10, 12], "label": "Complexity",   "max_cues": 5, "context_rules_visible": true},
+      {"id": "late2",  "nights": [13, 15], "label": "Mastery",      "max_cues": 6, "context_rules_visible": true}
+    ],
+    "event_weights_by_phase": {
+      "early":  {"danger": 2.0, "food": 1.5, "neutral": 1.0, "sensory": 0.5, "emotional": 0.5, "ambiguous": 0.2, "contextual": 0.1},
+      "mid1":   {"danger": 1.8, "food": 1.5, "neutral": 0.8, "sensory": 1.0, "emotional": 1.2, "ambiguous": 0.5, "contextual": 0.5},
+      "mid2":   {"danger": 1.5, "food": 1.2, "neutral": 0.6, "sensory": 1.2, "emotional": 1.0, "ambiguous": 1.0, "contextual": 1.5},
+      "late1":  {"danger": 1.2, "food": 1.0, "neutral": 0.5, "sensory": 1.0, "emotional": 1.5, "ambiguous": 1.5, "contextual": 2.0},
+      "late2":  {"danger": 1.0, "food": 1.0, "neutral": 0.5, "sensory": 0.8, "emotional": 1.2, "ambiguous": 1.8, "contextual": 2.5}
+    }
+  },
+  "merge": {
+    "exact_merge_strength_bonus": 0.25,
+    "trait_merge_confidence_gain": 0.20,
+    "context_merge_confidence_gain": 0.15,
+    "risky_merge_false_chance": 0.35,
+    "progressive_merge_exposures_required": 3
+  }
+}

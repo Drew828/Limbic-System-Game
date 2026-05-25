@@ -1,0 +1,99 @@
+{
+  "_comment": "Extra encounters to ensure full coverage across all 14 nights. Tests memories from events added in the new event batch.",
+
+  "events": [],
+
+  "encounters": [
+
+    {
+      "id": "enc_snake_on_trail",
+      "title": "The Still Shape",
+      "description": "A thick-bodied banded snake is coiled in the middle of the trail, sunning itself. Triangular head. It hasn't moved. You need to pass.",
+      "scene_type": "meadow",
+      "tags": ["snake", "venomous", "meadow", "danger"],
+      "relevant_memory_tags": ["freeze and back away", "triangular head", "venomous snake", "won't pursue"],
+      "misleading_memory_tags": ["pin it", "reach toward", "move it off the trail"],
+      "success_text": "You remember the shape of that head and what it means. You freeze, then back away slowly — several clear steps to the side before you give it a wide arc. It watches, then turns away. You pass without incident.",
+      "failure_text": "You try to move it. The strike is faster than anything you've seen. A bad bite on your hand — the next hours are miserable.",
+      "partial_text": "You back away awkwardly, half-remembering. The snake tracks you a moment before retreating. Close.",
+      "health_on_success": 0,
+      "health_on_failure": -22,
+      "health_on_no_memory": -18,
+      "night_range": [2, 7],
+      "weight": 1.3
+    },
+
+    {
+      "id": "enc_flooded_crossing",
+      "title": "Brown Water at the Ford",
+      "description": "The ford you used earlier in the journey is gone. In its place is chest-deep brown turbid water carrying broken branches. Your path crosses here. You could wade it — or wait.",
+      "scene_type": "river",
+      "tags": ["flash flood", "river", "crossing", "danger"],
+      "relevant_memory_tags": ["flash flood", "brown water don't cross", "wait it out", "debris = flood risk"],
+      "misleading_memory_tags": ["just wade quickly", "it's shallow enough"],
+      "success_text": "You remember what brown water with debris means. You sit and wait. Two hours later the water drops and clears — you cross ankle-deep. The wait saved you.",
+      "failure_text": "You wade in. A surge hits mid-crossing and sweeps you downstream. You drag yourself out downstream, battered and soaked.",
+      "partial_text": "You start to cross, then think better of it halfway and retreat. Still wet and shaken, but not swept away.",
+      "health_on_success": 0,
+      "health_on_failure": -20,
+      "health_on_no_memory": -22,
+      "night_range": [4, 11],
+      "weight": 1.2
+    },
+
+    {
+      "id": "enc_wasp_nest_trail",
+      "title": "The Nest on the Path",
+      "description": "A grey papery mass hangs beneath a fallen log directly across the trail. Wasps are circling it — active. The gap past the log is narrow.",
+      "scene_type": "forest",
+      "tags": ["wasps", "nest", "danger", "forest"],
+      "relevant_memory_tags": ["run immediately from wasp nest", "grey papery nest", "wasps run immediately", "don't freeze"],
+      "misleading_memory_tags": ["move slowly", "freeze near wasps", "back away slowly"],
+      "success_text": "The papery grey shape tells you everything. You don't negotiate — you sprint past at full speed. A few stings, but you're out of range before the swarm fully mobilises.",
+      "failure_text": "You try to back away slowly, thinking that'll calm them. It doesn't. The swarm reaches you before you're out of range. A punishing number of stings.",
+      "partial_text": "You move fast but not quite fast enough. The swarm clips you on the way through.",
+      "health_on_success": -4,
+      "health_on_failure": -20,
+      "health_on_no_memory": -18,
+      "night_range": [3, 9],
+      "weight": 1.1
+    },
+
+    {
+      "id": "enc_fog_on_ridge",
+      "title": "Fog on the High Path",
+      "description": "You're on a narrow ridge trail and thick fog has dropped. Visibility is two metres. The wind is louder on your right — open air somewhere below. The trail bends somewhere ahead, but you can't see where.",
+      "scene_type": "road",
+      "tags": ["fog", "cliff", "high path", "danger"],
+      "relevant_memory_tags": ["wait out fog near cliffs", "wind on one side = cliff", "fog on high paths stop", "patience on high paths"],
+      "misleading_memory_tags": ["keep moving to make distance", "walk slower but keep going"],
+      "success_text": "You remember: wind on one side in fog means open air. You stop and wait. Twenty minutes later the fog shifts — a hidden bend directly ahead, left side drops off completely. You pass it in clear air.",
+      "failure_text": "You keep moving. The trail bends sharply in the fog but you don't see it. You step off the edge onto loose scree and slide hard before a rock outcrop stops you.",
+      "partial_text": "You slow right down but keep moving. Your foot slips on the edge before you feel it — you recover, heart hammering.",
+      "health_on_success": 0,
+      "health_on_failure": -18,
+      "health_on_no_memory": -16,
+      "night_range": [6, 12],
+      "weight": 1.0
+    },
+
+    {
+      "id": "enc_birds_warn_predator",
+      "title": "The Forest Alarm",
+      "description": "You're moving through dense forest when a mass of birds erupts from the canopy fifty metres ahead — all at once, all in the same direction. The forest goes immediately quiet afterward. Something disturbed them.",
+      "scene_type": "forest",
+      "tags": ["birds", "predator warning", "danger", "contextual"],
+      "relevant_memory_tags": ["bird flush warning", "stop and wait after flush", "mass flush = large animal", "alarm calls then silence"],
+      "misleading_memory_tags": ["birds flush all the time", "keep moving"],
+      "success_text": "You freeze immediately. You wait. A large brown shape crosses the trail thirty metres ahead and vanishes into the trees without looking your way. The birds told you it was there. You wait another minute, then walk wide around the crossing point.",
+      "failure_text": "You keep walking. You walk straight into the bear's path. The encounter is brief and very bad.",
+      "partial_text": "You slow but don't stop. You catch a glimpse of a large shape and manage to retreat before contact — but your heart's still racing.",
+      "health_on_success": 0,
+      "health_on_failure": -20,
+      "health_on_no_memory": -22,
+      "night_range": [5, 14],
+      "weight": 1.2
+    }
+
+  ]
+}

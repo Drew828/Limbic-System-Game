@@ -1,0 +1,1156 @@
+{
+  "_comment": "Good events: food, healing, sensory discovery, and safe navigation. ~45% of new pool. Health gains range +8 to +20.",
+
+  "events": [
+
+    {
+      "id": "evt_fresh_stream",
+      "title": "Clear Mountain Stream",
+      "description": "The trees open onto a fast-moving stream. The water is crystal clear and cold, running over smooth stones. You can see the bottom easily.",
+      "scene_type": "river",
+      "tags": ["water", "stream", "drink", "food"],
+      "category": "food",
+      "emotional_value": 0.40,
+      "night_range": [1, 15],
+      "weight": 1.4,
+      "cues": [
+        {"sense": "visual", "description": "Clear water rushing over visible stone bed", "visible": true},
+        {"sense": "sound",  "description": "Steady rushing current",                     "visible": true},
+        {"sense": "smell",  "description": "Clean, cold, faintly mineral scent",         "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Drink deeply from the stream",
+          "outcome": {
+            "type": "success",
+            "description": "Cold and clean. Your thirst vanishes and your head clears. Fast-moving clear water with a visible bottom is reliably safe.",
+            "health_change": 14,
+            "memory_reward": {
+              "title": "Fast Clear Stream",
+              "description": "Fast-moving clear stream with visible stone bed. Safe to drink. Refreshing and restorative.",
+              "category": "food",
+              "traits": ["safe water", "moving water", "clear", "cold", "restorative"],
+              "hidden_traits": ["still or green-tinged water may be contaminated"],
+              "cue_tags": [
+                {"sense": "visual", "description": "clear water, visible bottom",  "reliability": 0.88},
+                {"sense": "sound",  "description": "fast-moving current",          "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "appearance", "value": "clear_and_fast", "modifier": "safe_to_drink", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.40,
+              "confidence": 0.82,
+              "memory_strength": 0.70,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Check upstream before drinking",
+          "outcome": {
+            "type": "success",
+            "description": "Nothing alarming upstream. You drink with confidence and feel refreshed, though the check cost you a little time.",
+            "health_change": 10,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_edible_roots",
+      "title": "Starchy Roots",
+      "description": "Along the riverbank the soil is loose and dark. Thick green leaves mark a patch of plants whose roots you recognize — starchy, filling, and safe when cooked.",
+      "scene_type": "river",
+      "tags": ["roots", "food", "plant", "edible"],
+      "category": "food",
+      "emotional_value": 0.30,
+      "night_range": [2, 15],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Broad dark-green leaves on low plants along the bank", "visible": true},
+        {"sense": "tactile", "description": "Loose, rich dark soil — easy to dig",                "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Dig up the roots and eat them raw",
+          "outcome": {
+            "type": "mixed",
+            "description": "Filling but tough and slightly bitter raw. Your stomach settles eventually. Not ideal — they're better cooked.",
+            "health_change": 8,
+            "memory_reward": {
+              "title": "Riverbank Roots",
+              "description": "Thick starchy roots from broad-leafed plants on the riverbank. Edible raw but better cooked.",
+              "category": "food",
+              "traits": ["edible", "starchy", "riverbank", "better cooked"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "broad dark-green leaves on low riverbank plants", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "preparation", "value": "cooked", "modifier": "more_nutritious", "confidence": 0.70, "discovered": true}
+              ],
+              "emotional_weight": 0.20,
+              "confidence": 0.72,
+              "memory_strength": 0.60,
+              "uncertainty": 0.28,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Roast them over a small fire first",
+          "outcome": {
+            "type": "success",
+            "description": "The roots soften and sweeten in the heat. A solid, filling meal — the best food you've found in days.",
+            "health_change": 16,
+            "memory_reward": {
+              "title": "Roasted Riverbank Roots",
+              "description": "Broad-leafed riverbank plant roots. Cooked = sweet and filling. Reliable calorie source.",
+              "category": "food",
+              "traits": ["edible", "starchy", "riverbank", "cooked", "calorie-dense"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual",   "description": "broad dark-green leaves on low bank plants", "reliability": 0.82},
+                {"sense": "tactile",  "description": "loose dark soil, easy to dig",               "reliability": 0.75}
+              ],
+              "context_rules": [
+                {"condition": "preparation", "value": "cooked", "modifier": "highly_nutritious", "confidence": 0.82, "discovered": true}
+              ],
+              "emotional_weight": 0.45,
+              "confidence": 0.80,
+              "memory_strength": 0.72,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_abandoned_honeycomb",
+      "title": "Abandoned Honeycomb",
+      "description": "High in a split tree trunk you spot a dark mass — an old honeycomb, long since emptied of its colony. Sticky remnants of honey still coat the cells. No bees in sight.",
+      "scene_type": "forest",
+      "tags": ["honey", "food", "bees", "abandoned"],
+      "category": "food",
+      "emotional_value": 0.50,
+      "night_range": [1, 10],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Dark waxy comb in a split tree trunk, no living bees", "visible": true},
+        {"sense": "smell",  "description": "Faint sweetness of old honey",                         "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Climb up and scrape out the remaining honey",
+          "outcome": {
+            "type": "success",
+            "description": "Rich and sweet — not much, but pure energy. You lick your fingers clean. No stings, no risk. A small gift from the forest.",
+            "health_change": 16,
+            "memory_reward": {
+              "title": "Abandoned Honeycomb",
+              "description": "Old honeycomb in a hollow tree with no colony remaining. Safe to take honey from. Sweet and calorie-dense.",
+              "category": "food",
+              "traits": ["honey", "safe", "no colony", "hollow tree", "sweet"],
+              "hidden_traits": ["active hives look similar but buzz loudly"],
+              "cue_tags": [
+                {"sense": "visual", "description": "dark waxy comb, no bees flying", "reliability": 0.85},
+                {"sense": "smell",  "description": "faint old-honey sweetness",       "reliability": 0.78}
+              ],
+              "context_rules": [
+                {"condition": "presence", "value": "no_bees",    "modifier": "safe_to_harvest", "confidence": 0.88, "discovered": true},
+                {"condition": "presence", "value": "active_bees","modifier": "dangerous",       "confidence": 0.90, "discovered": false}
+              ],
+              "emotional_weight": 0.55,
+              "confidence": 0.82,
+              "memory_strength": 0.70,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave it — could still have bees inside",
+          "outcome": {
+            "type": "neutral",
+            "description": "You back away. A few moments later the silence confirms what you suspected — the colony is long gone. You missed a free meal.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_sheltered_cave_rest",
+      "title": "Dry Cave Alcove",
+      "description": "A low shelf of rock forms a natural alcove in the hillside — dry, sheltered from the wind, and large enough to sit comfortably. The ground inside is smooth sand. No tracks, no smell of animal.",
+      "scene_type": "cave",
+      "tags": ["shelter", "rest", "cave", "safe"],
+      "category": "neutral",
+      "emotional_value": 0.35,
+      "night_range": [1, 15],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual",    "description": "Dry sand floor, no tracks, no debris",          "visible": true},
+        {"sense": "smell",     "description": "Neutral — no animal scent, no moisture",        "visible": true},
+        {"sense": "tactile",   "description": "Still air, noticeably warmer than outside",     "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Rest here for a while",
+          "outcome": {
+            "type": "success",
+            "description": "You settle into the alcove and let your muscles unknot. An hour of stillness and shelter does more good than you expected. You feel restored.",
+            "health_change": 18,
+            "memory_reward": {
+              "title": "Dry Cave Alcove",
+              "description": "Low rock alcove with dry sand floor and still air. No animal sign. Safe, warm shelter for rest.",
+              "category": "neutral",
+              "traits": ["shelter", "dry", "warm", "safe", "good for resting"],
+              "hidden_traits": ["deeper caves may be occupied"],
+              "cue_tags": [
+                {"sense": "smell",   "description": "no animal odor, dry neutral air", "reliability": 0.88},
+                {"sense": "visual",  "description": "smooth sand floor, no tracks",    "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "smell", "value": "no_animal_scent", "modifier": "likely_safe",  "confidence": 0.85, "discovered": true},
+                {"condition": "depth", "value": "shallow_alcove",  "modifier": "safer_than_deep", "confidence": 0.78, "discovered": true}
+              ],
+              "emotional_weight": 0.30,
+              "confidence": 0.80,
+              "memory_strength": 0.65,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Keep moving — no time to rest",
+          "outcome": {
+            "type": "neutral",
+            "description": "You press on, tired. The alcove fades behind you.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_meadow_healing_herbs",
+      "title": "Patch of Healing Herbs",
+      "description": "A cluster of low-growing plants fills a sunny gap in the meadow — small white flowers, serrated leaves, and a sharp medicinal scent. You've heard these described before.",
+      "scene_type": "meadow",
+      "tags": ["herbs", "medicine", "plant", "meadow"],
+      "category": "food",
+      "emotional_value": 0.45,
+      "night_range": [3, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Small white flowers, serrated green leaves in full sun", "visible": true},
+        {"sense": "smell",  "description": "Sharp, medicinal — slightly bitter when a leaf is crushed", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Gather the herbs and apply them to your wounds",
+          "outcome": {
+            "type": "success",
+            "description": "The crushed leaves draw heat from your injuries and dull the ache. By the time you walk on, the worst of the irritation has eased. Old knowledge pays off.",
+            "health_change": 15,
+            "memory_reward": {
+              "title": "Meadow Healing Herbs",
+              "description": "Small-flowered meadow plant with serrated leaves and medicinal smell. Applied to wounds — reduces pain and inflammation.",
+              "category": "food",
+              "traits": ["medicinal", "anti-inflammatory", "white flowers", "serrated leaves", "meadow"],
+              "hidden_traits": ["only effective when fresh — dried loses potency"],
+              "cue_tags": [
+                {"sense": "visual", "description": "small white flowers, serrated leaves",    "reliability": 0.82},
+                {"sense": "smell",  "description": "sharp medicinal bitterness when crushed", "reliability": 0.86}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.50,
+              "confidence": 0.78,
+              "memory_strength": 0.70,
+              "uncertainty": 0.22,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Not sure enough — leave them alone",
+          "outcome": {
+            "type": "neutral",
+            "description": "Caution wins. You walk on. Nothing gained, nothing lost.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_ripe_fruit_tree",
+      "title": "Ripe Fruit Tree",
+      "description": "A gnarled tree at the edge of the treeline is heavy with small, dark-red fruit. Several have fallen to the ground and split open — the flesh inside is bright and unrotted.",
+      "scene_type": "forest",
+      "tags": ["fruit", "food", "tree", "sweet"],
+      "category": "food",
+      "emotional_value": 0.45,
+      "night_range": [1, 12],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "visual", "description": "Dark-red fruit hanging heavily, fallen ones split open with clean flesh", "visible": true},
+        {"sense": "smell",  "description": "Sweet, slightly fermented scent from fallen fruit",                       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Pick and eat the fruit from the tree",
+          "outcome": {
+            "type": "success",
+            "description": "Sweet, tart, and juicy. You eat until you're satisfied. The fallen ones were just ripe — the ones on the tree are perfect.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Dark-Red Tree Fruit",
+              "description": "Small dark-red fruit from a gnarled tree at the forest edge. Clean flesh, sweet taste. Safe and filling.",
+              "category": "food",
+              "traits": ["edible", "sweet", "dark-red", "tree fruit", "forest edge"],
+              "hidden_traits": ["seeds may be mildly bitter — spit them out"],
+              "cue_tags": [
+                {"sense": "visual", "description": "dark-red colour, clean flesh in fallen fruit", "reliability": 0.82},
+                {"sense": "smell",  "description": "sweet-fermented scent from fallen ones",       "reliability": 0.75}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.45,
+              "confidence": 0.78,
+              "memory_strength": 0.65,
+              "uncertainty": 0.22,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Eat only the fallen ones to test them first",
+          "outcome": {
+            "type": "success",
+            "description": "A cautious approach. The fallen fruit is fine — nothing alarming in the first few bites. You gather more from the tree feeling confident.",
+            "health_change": 10,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_warm_spring",
+      "title": "Thermal Spring",
+      "description": "A wide, shallow pool steams gently in the morning air. The water is warm — not scalding — and clear, with pale mineral deposits ringing the edge. Animals have clearly visited: there are deer tracks in the mud.",
+      "scene_type": "river",
+      "tags": ["water", "spring", "warm", "rest", "mineral"],
+      "category": "neutral",
+      "emotional_value": 0.60,
+      "night_range": [4, 15],
+      "weight": 0.8,
+      "cues": [
+        {"sense": "visual",  "description": "Pale mineral deposits around pool rim, deer tracks in mud", "visible": true},
+        {"sense": "tactile", "description": "Warm water, not scalding — comfortable to touch",           "visible": true},
+        {"sense": "smell",   "description": "Faint sulphur and mineral smell",                           "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Rest in the warm water for a while",
+          "outcome": {
+            "type": "success",
+            "description": "The heat works deep into your sore muscles. Mineral-rich water soothes your skin. You emerge feeling remarkably restored — looser, warmer, clearer.",
+            "health_change": 20,
+            "memory_reward": {
+              "title": "Thermal Spring",
+              "description": "Warm mineral spring with deer tracks nearby. Restorative. Animals visit it too — reliable safe water and rest spot.",
+              "category": "neutral",
+              "traits": ["warm water", "restorative", "minerals", "deer visit", "natural spring"],
+              "hidden_traits": ["scalding vents may exist nearby — test with hand first"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "pale mineral ring, animal tracks",  "reliability": 0.88},
+                {"sense": "tactile", "description": "warm but not burning",              "reliability": 0.90},
+                {"sense": "smell",   "description": "faint sulphur and mineral",         "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "animal_sign", "value": "deer_tracks", "modifier": "likely_safe_water", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.65,
+              "confidence": 0.85,
+              "memory_strength": 0.75,
+              "uncertainty": 0.15,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Drink from it but don't linger",
+          "outcome": {
+            "type": "success",
+            "description": "The mineral water is clean and refreshing. You fill your water supply and move on.",
+            "health_change": 10,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_squirrel_cache",
+      "title": "Buried Nut Cache",
+      "description": "A squirrel scrabbles furiously nearby and darts away, revealing a shallow hole packed with acorns and hazelnuts. More than it could ever eat. The nuts look sound — no mould, no rot.",
+      "scene_type": "forest",
+      "tags": ["nuts", "food", "squirrel", "cache", "foraging"],
+      "category": "food",
+      "emotional_value": 0.40,
+      "night_range": [1, 10],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Small hole in soil packed with acorns and hazelnuts", "visible": true},
+        {"sense": "visual", "description": "Squirrel fleeing — you disturbed its cache",          "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Take a handful and eat — the squirrel wouldn't cache rotted food",
+          "outcome": {
+            "type": "success",
+            "description": "Hard and bitter raw, but full of energy. A squirrel's cache is a quality check — only sound nuts get buried. You feel steadier after eating.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Squirrel Nut Cache",
+              "description": "Buried nuts uncovered by a squirrel. Acorns and hazelnuts — sound, no rot. Animals only cache quality food.",
+              "category": "food",
+              "traits": ["edible", "nuts", "acorns", "hazelnuts", "animal cached"],
+              "hidden_traits": ["acorns need leaching to remove full bitterness"],
+              "cue_tags": [
+                {"sense": "visual", "description": "nuts packed in a shallow soil hole", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "source", "value": "animal_cache", "modifier": "likely_sound_food", "confidence": 0.78, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.75,
+              "memory_strength": 0.62,
+              "uncertainty": 0.25,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — the squirrel needs them more",
+          "outcome": {
+            "type": "neutral",
+            "description": "You back away. The squirrel returns almost immediately, chittering furiously.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_fish_shallow_pool",
+      "title": "Fish in a Shallow Pool",
+      "description": "A bend in the river has created a calm backwater pool. Several fish hang motionless near the surface in the clear shallows. They are slow — the water is cool but still.",
+      "scene_type": "river",
+      "tags": ["fish", "food", "river", "protein", "foraging"],
+      "category": "food",
+      "emotional_value": 0.40,
+      "night_range": [2, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Fish visible near surface in clear still shallows",    "visible": true},
+        {"sense": "sound",  "description": "Quiet backwater — no current noise, only gentle laps", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Wade in slowly and try to catch one by hand",
+          "outcome": {
+            "type": "mixed",
+            "description": "You catch one after several splashing attempts. It takes longer than expected but the effort pays off — a solid meal of fresh protein.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Backwater Fish",
+              "description": "Slow fish in calm backwater pool. Catchable by hand — need patience. Good protein source.",
+              "category": "food",
+              "traits": ["fish", "edible", "protein", "calm water", "catchable by hand"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "fish near surface in still shallow water", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "water_type", "value": "calm_backwater", "modifier": "fish_catchable", "confidence": 0.75, "discovered": true}
+              ],
+              "emotional_weight": 0.40,
+              "confidence": 0.72,
+              "memory_strength": 0.65,
+              "uncertainty": 0.28,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Fashion a simple spear from a stick first",
+          "outcome": {
+            "type": "success",
+            "description": "The sharpened stick does the job cleanly. You land two fish in under ten minutes. Roasted on a flat stone, they're excellent.",
+            "health_change": 18,
+            "memory_reward": {
+              "title": "Speared Backwater Fish",
+              "description": "Still backwater fish, speared with a sharpened stick. Efficient and high yield. Tool use = better outcome.",
+              "category": "food",
+              "traits": ["fish", "protein", "spear method", "calm water", "efficient"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "fish near surface in clear still water", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "tool",       "value": "sharpened_stick", "modifier": "better_yield", "confidence": 0.82, "discovered": true},
+                {"condition": "water_type", "value": "calm_backwater",  "modifier": "fish_catchable","confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": 0.50,
+              "confidence": 0.80,
+              "memory_strength": 0.72,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_calm_meadow_rest",
+      "title": "Sunlit Meadow Rest",
+      "description": "The trail opens into a broad meadow. Warm sunlight, no wind, soft grass. No animal movement visible. The silence is peaceful — just insects and distant birdsong.",
+      "scene_type": "meadow",
+      "tags": ["rest", "meadow", "sun", "safe"],
+      "category": "neutral",
+      "emotional_value": 0.50,
+      "night_range": [1, 15],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "visual",  "description": "Open flat meadow, tall grass, full sunlight",      "visible": true},
+        {"sense": "sound",   "description": "Insects, distant birds — nothing alarming",        "visible": true},
+        {"sense": "tactile", "description": "Warm sun on your skin, no wind",                   "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Lie down in the sun and rest",
+          "outcome": {
+            "type": "success",
+            "description": "The warmth seeps in. Your breathing slows. A short rest in good conditions is more restorative than a long sleep in poor ones.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Sunlit Meadow",
+              "description": "Open meadow with warm sun and no threats. Good resting spot — visible in all directions, no cover for predators.",
+              "category": "neutral",
+              "traits": ["safe", "open", "warm", "visible sightlines", "restful"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "open meadow, no animal movement", "reliability": 0.78}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.50,
+              "confidence": 0.75,
+              "memory_strength": 0.60,
+              "uncertainty": 0.25,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Cross quickly — open ground feels exposed",
+          "outcome": {
+            "type": "neutral",
+            "description": "You cross without incident. Nothing was waiting.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_birds_lead_to_water",
+      "title": "Birds Converging",
+      "description": "A stream of small birds cuts across the sky ahead, all flying in the same direction just before dusk. You've heard that birds converge on water at sunset.",
+      "scene_type": "forest",
+      "tags": ["birds", "water", "navigation", "contextual"],
+      "category": "contextual",
+      "emotional_value": 0.30,
+      "night_range": [3, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Multiple birds flying in the same direction near sunset", "visible": true},
+        {"sense": "sound",  "description": "Chattering bird calls in the direction they're heading",  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Follow the birds",
+          "outcome": {
+            "type": "success",
+            "description": "Ten minutes later you find a wide stream. The birds wheel and land at the bank. You drink your fill before dark.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Birds at Dusk → Water",
+              "description": "Birds flying together near sunset led to a stream. Converging birds at dusk reliably signal water nearby.",
+              "category": "contextual",
+              "traits": ["bird navigation cue", "water indicator", "dusk behaviour", "reliable"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "multiple birds flying same direction near sunset", "reliability": 0.84}
+              ],
+              "context_rules": [
+                {"condition": "time_of_day", "value": "dusk",         "modifier": "birds_head_to_water", "confidence": 0.82, "discovered": true},
+                {"condition": "behavior",    "value": "converging",   "modifier": "water_nearby",        "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.80,
+              "memory_strength": 0.68,
+              "uncertainty": 0.20,
+              "reliability": 0.84
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Keep to the trail — you don't have time to detour",
+          "outcome": {
+            "type": "neutral",
+            "description": "You carry on. By nightfall you're thirsty. You had a signal and ignored it.",
+            "health_change": -4,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_abandoned_camp_supplies",
+      "title": "Abandoned Camp",
+      "description": "Half-hidden in the undergrowth, a campsite. The fire pit is old and cold — no one has been here in a long time. A pack leans against a log, contents still intact.",
+      "scene_type": "ruins",
+      "tags": ["camp", "supplies", "abandoned", "shelter"],
+      "category": "neutral",
+      "emotional_value": 0.35,
+      "night_range": [4, 15],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual", "description": "Cold fire pit with old grey ash, weathered pack against a log", "visible": true},
+        {"sense": "smell",  "description": "No fresh smell — just old wood, dry canvas, cold ash",          "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Search the pack carefully",
+          "outcome": {
+            "type": "success",
+            "description": "Inside: a watertight pouch of dried meat, a small knife, and a folded piece of treated leather. Whoever left this left it behind for good — you take what you can use.",
+            "health_change": 14,
+            "memory_reward": {
+              "title": "Abandoned Camp",
+              "description": "Old campsite with gear left behind. Cold ash, no fresh sign. Safe to search. Abandoned camps can hold useful supplies.",
+              "category": "neutral",
+              "traits": ["abandoned", "supplies", "safe", "old camp", "no occupant"],
+              "hidden_traits": ["occupied camps have fresh ash and smell of smoke"],
+              "cue_tags": [
+                {"sense": "visual", "description": "grey cold ash, weathered equipment", "reliability": 0.85},
+                {"sense": "smell",  "description": "no fresh smoke or food smell",        "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "fire", "value": "cold_grey_ash",  "modifier": "long_abandoned",   "confidence": 0.88, "discovered": true},
+                {"condition": "fire", "value": "warm_or_smoking","modifier": "recently_occupied","confidence": 0.90, "discovered": false}
+              ],
+              "emotional_weight": 0.40,
+              "confidence": 0.78,
+              "memory_strength": 0.65,
+              "uncertainty": 0.22,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave it alone — could belong to someone",
+          "outcome": {
+            "type": "neutral",
+            "description": "You respect the boundary. The camp's owner is long gone.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_cattail_marsh",
+      "title": "Marsh Cattails",
+      "description": "A shallow marshy area beside the trail is choked with tall cattail plants. Their thick brown seed heads stand like torches. You remember hearing these described as one of nature's most complete wild foods.",
+      "scene_type": "river",
+      "tags": ["cattails", "marsh", "food", "plant", "foraging"],
+      "category": "food",
+      "emotional_value": 0.35,
+      "night_range": [2, 12],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Tall plants with thick brown cylindrical seed heads in still water", "visible": true},
+        {"sense": "tactile","description": "Soft, spongy roots visible where the water is shallow",              "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Pull up the roots and eat them — every part of this plant is edible",
+          "outcome": {
+            "type": "success",
+            "description": "Starchy and mild. The young roots are almost like a potato. You eat your fill standing in the shallows. Reliable, predictable, everywhere.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Cattails",
+              "description": "Marsh plant with thick brown seed heads. Roots and shoots are edible and starchy. Highly reliable wild food — grows abundantly near water.",
+              "category": "food",
+              "traits": ["edible", "starchy roots", "near water", "abundant", "reliable wild food"],
+              "hidden_traits": ["pollen is also edible and calorie-dense in spring"],
+              "cue_tags": [
+                {"sense": "visual", "description": "thick brown cylindrical seed heads above water", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "habitat", "value": "shallow_marsh", "modifier": "cattails_likely", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.40,
+              "confidence": 0.88,
+              "memory_strength": 0.72,
+              "uncertainty": 0.12,
+              "reliability": 0.92
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Harvest a handful for later",
+          "outcome": {
+            "type": "success",
+            "description": "You pull a few roots and tuck them away. A modest but reliable gain.",
+            "health_change": 6,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_pine_resin_find",
+      "title": "Weeping Pine Resin",
+      "description": "A tall pine tree has a long gash in its bark — old damage, maybe from a falling limb. Golden resin has beaded and hardened along the wound. You recall that pine resin has many uses.",
+      "scene_type": "forest",
+      "tags": ["resin", "pine", "tool", "medicine", "contextual"],
+      "category": "neutral",
+      "emotional_value": 0.25,
+      "night_range": [2, 15],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual", "description": "Golden-amber resin beads hardened along a bark wound",  "visible": true},
+        {"sense": "smell",  "description": "Sharp piney turpentine scent — stronger near the wound", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Collect the resin — seal wounds, start fires, waterproof leather",
+          "outcome": {
+            "type": "success",
+            "description": "You scrape several wafers of hardened resin into your pack. It smells powerfully of pine. Useful in a dozen ways — a small find that earns its weight.",
+            "health_change": 6,
+            "memory_reward": {
+              "title": "Pine Resin",
+              "description": "Hardened resin from a wounded pine. Collected and carried. Used for: sealing wounds, fire-starting, waterproofing. Identified by golden colour and turpentine smell.",
+              "category": "neutral",
+              "traits": ["resin", "pine", "fire-starting", "wound-sealant", "waterproofing", "multi-use"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "golden-amber hardened beads on pine bark",   "reliability": 0.90},
+                {"sense": "smell",  "description": "sharp turpentine-pine scent near the wound", "reliability": 0.88}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.25,
+              "confidence": 0.85,
+              "memory_strength": 0.65,
+              "uncertainty": 0.15,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Observe it but move on",
+          "outcome": {
+            "type": "neutral",
+            "description": "You note the pine for later. Nothing gained today.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_moss_navigation",
+      "title": "Moss and Orientation",
+      "description": "You've been walking in circles — the forest looks the same in every direction. You stop and examine a cluster of trees carefully. Thick, dark moss grows densely on one side of almost every trunk.",
+      "scene_type": "forest",
+      "tags": ["moss", "navigation", "orientation", "contextual"],
+      "category": "contextual",
+      "emotional_value": 0.35,
+      "night_range": [2, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Thick dark-green moss growing densely on the same side of multiple trees", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Use the moss to orient yourself — it grows on the shadier, north-facing side",
+          "outcome": {
+            "type": "success",
+            "description": "The moss is consistently on one side. You use it to confirm your direction and adjust your route. The forest stops being a maze.",
+            "health_change": 4,
+            "memory_reward": {
+              "title": "Moss Navigation",
+              "description": "Moss grows thickest on the north-facing (shaded) side of trees. Consistent across multiple trunks — reliable directional cue in forest.",
+              "category": "contextual",
+              "traits": ["navigation", "north indicator", "moss", "tree orientation", "reliable in forest"],
+              "hidden_traits": ["less reliable in dense canopy where light comes from all sides"],
+              "cue_tags": [
+                {"sense": "visual", "description": "thick moss on same side of multiple trunks", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "consistency", "value": "multiple_trees", "modifier": "reliable_direction", "confidence": 0.82, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.80,
+              "memory_strength": 0.70,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Climb a tree to get a view above the canopy",
+          "outcome": {
+            "type": "success",
+            "description": "Slow going, but you get your bearings from above. You can see the river and adjust your direction.",
+            "health_change": 2,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_sunny_ridge_rest",
+      "title": "Warm Rocky Ridge",
+      "description": "The trail climbs to a broad flat ridge of bare sun-warmed rock. The view is clear in every direction. Wind is low. The stone is almost hot to the touch — it's been baking in the sun all day.",
+      "scene_type": "road",
+      "tags": ["rest", "ridge", "sun", "view", "shelter"],
+      "category": "neutral",
+      "emotional_value": 0.45,
+      "night_range": [1, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual",  "description": "Flat bare rock, unobstructed 360-degree view",         "visible": true},
+        {"sense": "tactile", "description": "Rock surface warm from hours of sun exposure",          "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Rest here and take stock of your situation",
+          "outcome": {
+            "type": "success",
+            "description": "The warmth of the rock radiates up through you. The high vantage lets you spot a path you'd have missed. Rest plus awareness — a valuable stop.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Sun-Warmed Ridge",
+              "description": "Flat bare rock ridge, warm and dry. Good resting spot with full visibility. High ground gives better navigation overview.",
+              "category": "neutral",
+              "traits": ["warm", "high ground", "safe rest", "clear sightlines", "sun-heated rock"],
+              "hidden_traits": ["exposed ridges become cold and dangerous in rain or wind"],
+              "cue_tags": [
+                {"sense": "tactile", "description": "warm rock surface from sun exposure", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "weather", "value": "clear_sun",  "modifier": "good_rest_spot",  "confidence": 0.80, "discovered": true},
+                {"condition": "weather", "value": "storm",      "modifier": "exposed_danger",  "confidence": 0.85, "discovered": false}
+              ],
+              "emotional_weight": 0.45,
+              "confidence": 0.78,
+              "memory_strength": 0.65,
+              "uncertainty": 0.22,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Keep moving — the view isn't worth the time",
+          "outcome": {
+            "type": "neutral",
+            "description": "You press on. The ridge falls behind. Nothing lost, nothing gained.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wild_onions",
+      "title": "Wild Onions",
+      "description": "A sharp smell hits you from beside the trail — unmistakable. A patch of slender green shoots grows in a cluster, and when you crush one between your fingers, it smells powerfully of onion.",
+      "scene_type": "meadow",
+      "tags": ["onion", "food", "plant", "smell", "foraging"],
+      "category": "food",
+      "emotional_value": 0.35,
+      "night_range": [1, 12],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Slender green shoots in a cluster at the trail edge", "visible": true},
+        {"sense": "smell",  "description": "Strong, unmistakable onion smell when crushed",       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Harvest and eat them — the smell is a definitive ID",
+          "outcome": {
+            "type": "success",
+            "description": "Sharp and pungent raw, but every cell knows this smell means safe. You eat a good handful and feel the energy settle in.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Wild Onions",
+              "description": "Slender green shoots with undeniable onion smell. Always safe if they smell like onion — lookalikes without the smell are toxic.",
+              "category": "food",
+              "traits": ["edible", "pungent", "slender green shoots", "smell test reliable"],
+              "hidden_traits": ["death camas looks similar but has no onion smell — always smell-test first"],
+              "cue_tags": [
+                {"sense": "smell", "description": "strong onion smell when crushed", "reliability": 0.96}
+              ],
+              "context_rules": [
+                {"condition": "smell", "value": "onion_present",  "modifier": "safe_edible",  "confidence": 0.95, "discovered": true},
+                {"condition": "smell", "value": "no_onion_smell", "modifier": "possibly_toxic","confidence": 0.88, "discovered": false}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.92,
+              "memory_strength": 0.75,
+              "uncertainty": 0.08,
+              "reliability": 0.96
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Take just a few to test before eating more",
+          "outcome": {
+            "type": "success",
+            "description": "No ill effects, as expected. You go back and harvest a proper amount.",
+            "health_change": 8,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_bone_broth_camp",
+      "title": "Boiling Bones",
+      "description": "You have remnants from a previous meal — bones with gristle still attached. A fire and some river water, and you could have broth. It seems laborious, but the nutrition is locked inside the marrow.",
+      "scene_type": "camp",
+      "tags": ["broth", "marrow", "food", "cooking", "camp"],
+      "category": "food",
+      "emotional_value": 0.30,
+      "night_range": [3, 15],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual", "description": "Leftover bones with marrow still inside",          "visible": true},
+        {"sense": "smell",  "description": "Rich fatty smell when the bones are heated nearby", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Boil the bones for broth",
+          "outcome": {
+            "type": "success",
+            "description": "Slow and smoky, but worth every minute. The broth is rich with rendered marrow fat and gelatine. You drink it warm and feel genuinely nourished.",
+            "health_change": 14,
+            "memory_reward": {
+              "title": "Bone Broth",
+              "description": "Boiling old bones in water extracts marrow fat and collagen. Takes time and fire, but produces concentrated, warming nutrition.",
+              "category": "food",
+              "traits": ["broth", "marrow", "nutritious", "requires fire", "cooking method"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "smell", "description": "rich fatty smell from heated bones", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "tool", "value": "fire_and_water", "modifier": "enables_broth", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.82,
+              "memory_strength": 0.65,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Not worth the fire — move on",
+          "outcome": {
+            "type": "neutral",
+            "description": "You leave the bones and continue. A meal left behind.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_natural_windbreak",
+      "title": "Natural Windbreak",
+      "description": "A dense stand of young spruce trees blocks the wind completely on the lee side. The ground there is thick with dry fallen needles — warm and insulating. A good place to stop before nightfall.",
+      "scene_type": "forest",
+      "tags": ["shelter", "windbreak", "rest", "forest", "camp"],
+      "category": "neutral",
+      "emotional_value": 0.35,
+      "night_range": [1, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "tactile", "description": "Wind stops abruptly at the spruce stand's edge",         "visible": true},
+        {"sense": "visual",  "description": "Thick dry needle bed on the ground under the trees",     "visible": true},
+        {"sense": "smell",   "description": "Dry, resinous, warm air — sheltered from the outside",  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Camp here for the night",
+          "outcome": {
+            "type": "success",
+            "description": "The wind howls beyond the tree wall. Inside, you barely feel it. The dry needle bed is warmer than expected. You wake less exhausted than usual.",
+            "health_change": 16,
+            "memory_reward": {
+              "title": "Spruce Windbreak",
+              "description": "Dense young spruce stand blocks wind completely on the lee side. Dry needle bed insulates. A natural shelter that dramatically improves rest quality.",
+              "category": "neutral",
+              "traits": ["natural shelter", "windbreak", "spruce trees", "dry bed", "warm"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "tactile", "description": "sudden drop in wind on lee side",      "reliability": 0.88},
+                {"sense": "smell",   "description": "warm dry resinous air, sheltered feel", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "tree_type", "value": "dense_young_spruce", "modifier": "good_windbreak", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.40,
+              "confidence": 0.82,
+              "memory_strength": 0.68,
+              "uncertainty": 0.18,
+              "reliability": 0.86
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Rest briefly, then keep moving before dark",
+          "outcome": {
+            "type": "success",
+            "description": "A short break in the shelter gives you more energy than expected.",
+            "health_change": 6,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_rainwater_collection",
+      "title": "Rain-Filled Hollow",
+      "description": "A wide flat stone has a natural basin carved into it — filled clear to the brim with fresh rainwater. It must have fallen overnight. The surface is still, with no debris.",
+      "scene_type": "road",
+      "tags": ["water", "rain", "drink", "rock", "collection"],
+      "category": "food",
+      "emotional_value": 0.35,
+      "night_range": [1, 15],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Stone basin brim-full with clear still water",     "visible": true},
+        {"sense": "smell",  "description": "Clean, no mineral or organic smell — fresh rain",  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Drink from the basin — fresh rainwater is safe",
+          "outcome": {
+            "type": "success",
+            "description": "Completely clean. Fresh rainwater in a stone basin has nothing to contaminate it. You drink your fill and feel the benefit immediately.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Rainwater Basin",
+              "description": "Clear rainwater pooled in a stone hollow. No contamination possible from a clean stone surface. Fresh rain in natural basins = reliably safe.",
+              "category": "food",
+              "traits": ["safe water", "rainwater", "stone basin", "no contamination risk"],
+              "hidden_traits": ["avoid basins near animal trails — faecal contamination possible"],
+              "cue_tags": [
+                {"sense": "visual", "description": "clear still water in clean stone hollow", "reliability": 0.85},
+                {"sense": "smell",  "description": "no smell — neutral clean water",          "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "source",   "value": "rain_on_clean_rock", "modifier": "safe_to_drink", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.85,
+              "memory_strength": 0.65,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Fill your water supply but don't drink here",
+          "outcome": {
+            "type": "neutral",
+            "description": "You collect the water carefully. No immediate benefit, but you're prepared for later.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    }
+
+  ]
+}

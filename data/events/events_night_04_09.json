@@ -1,0 +1,483 @@
+{
+  "_comment": "Night 4-9 events: repetition, emotional tagging, contextual meaning, cue recognition, relational danger. Player starts seeing patterns and conditions.",
+  "events": [
+    {
+      "id": "evt_bear_claw_marks",
+      "title": "Claw Marks on the Trees",
+      "description": "High on the bark of several trees along the trail, you notice deep gouges. Long, parallel scratches — carved by something with large claws. No animal is visible. The air smells faintly of musk.",
+      "scene_type": "forest",
+      "tags": ["bear", "cue", "warning", "contextual"],
+      "category": "contextual",
+      "emotional_value": -0.40,
+      "night_range": [4, 9],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "visual", "description": "Deep claw marks carved at shoulder height on multiple trees", "visible": true},
+        {"sense": "smell",  "description": "Faint musky animal odor on the bark",                        "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Recognize the cue and move off-trail",
+          "prerequisite_memory_tag": "bear",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "Your experience tells you: claw marks mean recent bear activity. You detour through the underbrush and emerge safely further down the trail.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bear Claw Marks",
+              "description": "Claw marks on bark = bear territory nearby. Reliable warning cue.",
+              "category": "contextual",
+              "traits": ["bear territory marker", "warning cue", "reliable indicator"],
+              "hidden_traits": ["height of marks indicates bear size"],
+              "cue_tags": [
+                {"sense": "visual", "description": "deep parallel scratches on bark at shoulder height", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "cue", "value": "claw_marks", "modifier": "bear_nearby", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.35,
+              "confidence": 0.85,
+              "memory_strength": 0.70,
+              "uncertainty": 0.15,
+              "reliability": 0.90,
+              "merge_hint": "bear"
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Continue on the trail",
+          "outcome": {
+            "type": "failure",
+            "description": "Around the next bend, a bear blocks the path. Without preparation, the encounter goes badly.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Claw Marks Warning",
+              "description": "Claw marks on bark meant a bear was close. I should have known. Ignored the sign and paid for it.",
+              "category": "contextual",
+              "traits": ["claw marks = bear nearby", "warning ignored"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "parallel claw marks on bark", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "cue", "value": "claw_marks", "modifier": "bear_ahead", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.88,
+              "memory_strength": 0.80,
+              "uncertainty": 0.12,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_bees_smoke_discovery",
+      "title": "Fire, Smoke, and the Hollow Tree",
+      "description": "You're near a small fire you built. Downwind, a hollow tree buzzes quietly. But you notice something: the bees near the smoke from your fire seem sluggish, barely moving.",
+      "scene_type": "camp",
+      "tags": ["bees", "smoke", "honey", "discovery", "contextual"],
+      "category": "contextual",
+      "emotional_value": 0.30,
+      "night_range": [5, 10],
+      "weight": 1.0,
+      "prerequisite_memory_tags": ["bees", "smoke", "fire"],
+      "cues": [
+        {"sense": "visual", "description": "Bees near smoke moving slowly, barely flying", "visible": true},
+        {"sense": "smell",  "description": "Smoke from your small fire drifting toward the tree", "visible": true},
+        {"sense": "sound",  "description": "Usual buzzing is muted, quieter near the smoke",       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Use your fire to smoke the nest and carefully take the honey",
+          "prerequisite_memory_tag": "bees",
+          "mastery_required": 2,
+          "outcome": {
+            "type": "success",
+            "description": "With controlled smoke directed at the hollow, the bees slow and retreat inside. You carefully extract several combs of honey. Rich, thick, and sweet — worth the patience.",
+            "health_change": 18,
+            "memory_reward": {
+              "title": "Bees + Smoke",
+              "description": "Smoke calms bees. Fire smoke near hive = safe to approach and harvest honey.",
+              "category": "contextual",
+              "traits": ["smoke calms bees", "honey safely harvestable with smoke", "fire + bees = opportunity"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "muted buzzing near smoke", "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "with",     "value": "smoke",   "modifier": "bees_calm",        "confidence": 0.85, "discovered": true},
+                {"condition": "behavior", "value": "smoked",  "modifier": "safe_to_approach", "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": 0.50,
+              "confidence": 0.82,
+              "memory_strength": 0.75,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Interesting — but too risky. Move on.",
+          "outcome": {
+            "type": "neutral",
+            "description": "You watch for a moment. The smoke really does seem to affect them. A useful thing to remember.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Smoke and Bees",
+              "description": "Smoke from fire seemed to slow the bees down. Didn't test it fully.",
+              "category": "contextual",
+              "traits": ["smoke affects bees", "might be usable"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [
+                {"condition": "with", "value": "smoke", "modifier": "bees_slowed", "confidence": 0.55, "discovered": true}
+              ],
+              "emotional_weight": 0.15,
+              "confidence": 0.50,
+              "memory_strength": 0.50,
+              "uncertainty": 0.50,
+              "reliability": 0.65
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wolf_meadow",
+      "title": "Wolf in the Open",
+      "description": "You step out of the treeline into a broad, sunlit meadow. In the middle of the grass, a single grey wolf watches you. It doesn't move. The sun is high.",
+      "scene_type": "meadow",
+      "tags": ["wolf", "meadow", "midday", "contextual"],
+      "category": "contextual",
+      "emotional_value": -0.30,
+      "night_range": [6, 12],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual",    "description": "Single grey wolf, sitting, watching you from meadow center", "visible": true},
+        {"sense": "contextual","description": "Bright midday sun, open ground, no cover nearby",            "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Recognize the context and walk steadily across — it won't hunt in daylight in the open",
+          "prerequisite_memory_tag": "wolf",
+          "mastery_required": 2,
+          "outcome": {
+            "type": "success",
+            "description": "The wolf watches as you cross. When you're near the center it turns and lopes away into the far trees. You were right — wolves hunt differently in open daylight.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Wolf (Meadow, Daylight)",
+              "description": "Lone wolf in open meadow at midday. Watched me but didn't approach. Wolves are less dangerous in open spaces during daytime.",
+              "category": "contextual",
+              "traits": ["less aggressive in open", "less dangerous in daylight", "lone wolf != pack"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "contextual", "description": "open ground at midday",   "reliability": 0.78}
+              ],
+              "context_rules": [
+                {"condition": "time_of_day", "value": "midday",     "modifier": "less_dangerous", "confidence": 0.78, "discovered": true},
+                {"condition": "environment", "value": "open_meadow","modifier": "less_dangerous", "confidence": 0.75, "discovered": true}
+              ],
+              "emotional_weight": -0.20,
+              "confidence": 0.75,
+              "memory_strength": 0.65,
+              "uncertainty": 0.25,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Retreat to the treeline immediately",
+          "outcome": {
+            "type": "neutral",
+            "description": "You back into the trees. The wolf disappears. You lose an hour finding another route.",
+            "health_change": -5,
+            "memory_reward": {
+              "title": "Wolf in Meadow",
+              "description": "Lone wolf in open meadow. Retreated — didn't investigate its behavior in this context.",
+              "category": "ambiguous",
+              "traits": ["wolf seen in meadow", "avoided it"],
+              "hidden_traits": ["may be safer in open during day"],
+              "cue_tags": [],
+              "context_rules": [],
+              "emotional_weight": -0.35,
+              "confidence": 0.40,
+              "memory_strength": 0.45,
+              "uncertainty": 0.60,
+              "reliability": 0.50
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_mushroom_repeat",
+      "title": "The Same Mushrooms Again",
+      "description": "Pale mushrooms with brown spots. You've seen these before. This time you're more confident — you remember eating them and feeling fine.",
+      "scene_type": "forest",
+      "tags": ["mushroom", "food", "repeat", "pattern"],
+      "category": "food",
+      "emotional_value": 0.20,
+      "night_range": [4, 10],
+      "weight": 1.0,
+      "prerequisite_memory_tags": ["mushroom"],
+      "cues": [
+        {"sense": "visual", "description": "Pale mushrooms with brown spots — identical to the ones you've seen before", "visible": true},
+        {"sense": "smell",  "description": "Same earthy dampness", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat them — you've done this before with no ill effects",
+          "outcome": {
+            "type": "success",
+            "description": "Familiar. Safe. Your confidence in identifying them grows. The pattern reinforces itself.",
+            "health_change": 8,
+            "memory_reward": {
+              "title": "Spotted Mushrooms",
+              "description": "Eaten twice, both times fine. Growing more reliable identification. Pale, brown-spotted = edible.",
+              "category": "food",
+              "traits": ["edible", "pale with brown spots", "growing confidence", "pattern confirmed"],
+              "hidden_traits": ["third exposure will fully confirm reliability"],
+              "cue_tags": [
+                {"sense": "visual", "description": "pale cap with brown spots", "reliability": 0.80}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.25,
+              "confidence": 0.70,
+              "memory_strength": 0.65,
+              "uncertainty": 0.30,
+              "reliability": 0.78,
+              "merge_hint": "mushroom"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_water_stagnant",
+      "title": "Stagnant Pool",
+      "description": "A wide pool of still water sits in a hollow. It looks dark and greenish. No current, no sounds. A dead bird lies at the edge. You're thirsty.",
+      "scene_type": "river",
+      "tags": ["water", "danger", "stagnant", "contextual"],
+      "category": "contextual",
+      "emotional_value": -0.30,
+      "night_range": [4, 12],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Greenish, murky standing water — no current",        "visible": true},
+        {"sense": "smell",  "description": "Faintly rotten, stagnant smell",                    "visible": true},
+        {"sense": "visual", "description": "Dead bird at the water's edge",                     "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Recognize the signs and do not drink",
+          "prerequisite_memory_tag": "water",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "Your memory of the clean stream guides you — this is wrong. Still, dark, smelly. You move on, thirsty but wise.",
+            "health_change": -5,
+            "memory_reward": {
+              "title": "Stagnant Water",
+              "description": "Still, dark, greenish water with dead animals nearby = dangerous. Distinct from fast, clear water.",
+              "category": "contextual",
+              "traits": ["dangerous", "still water", "dark green", "dead animals nearby"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "greenish murky water, no current",    "reliability": 0.92},
+                {"sense": "smell",  "description": "rotten stagnant smell",               "reliability": 0.90},
+                {"sense": "visual", "description": "dead animals at water edge",          "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "flow",    "value": "still",   "modifier": "dangerous",    "confidence": 0.85, "discovered": true},
+                {"condition": "clarity", "value": "murky",   "modifier": "dangerous",    "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.45,
+              "confidence": 0.88,
+              "memory_strength": 0.70,
+              "uncertainty": 0.12,
+              "reliability": 0.92,
+              "merge_hint": "water"
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Drink — water is water",
+          "outcome": {
+            "type": "failure",
+            "description": "Within hours, violent cramps. You spend the rest of the day sick and barely moving. Terrible lesson.",
+            "health_change": -30,
+            "memory_reward": {
+              "title": "Poisoned Water",
+              "description": "Drank stagnant, dark water. Got extremely sick. Still water can be poisonous.",
+              "category": "danger",
+              "traits": ["stagnant water dangerous", "still water poisons", "do not drink if dark/smelly"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "smell", "description": "rotten stagnant smell",       "reliability": 0.95},
+                {"sense": "visual","description": "greenish murky color",        "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "clarity", "value": "murky", "modifier": "dangerous", "confidence": 0.95, "discovered": true},
+                {"condition": "flow",    "value": "still",  "modifier": "dangerous", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.80,
+              "confidence": 0.92,
+              "memory_strength": 0.88,
+              "uncertainty": 0.08,
+              "reliability": 0.96
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_honey_bee_bait",
+      "title": "Honey Left on a Rock",
+      "description": "Someone has left what appears to be a honeycomb on a flat stone by the trail. The golden comb gleams, untouched. A low buzzing comes from nearby trees.",
+      "scene_type": "forest",
+      "tags": ["honey", "bees", "trap", "contextual"],
+      "category": "contextual",
+      "emotional_value": -0.20,
+      "night_range": [6, 12],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual", "description": "Honeycomb on flat rock, unattended",              "visible": true},
+        {"sense": "sound",  "description": "Buzzing from trees nearby",                       "visible": true},
+        {"sense": "contextual", "description": "No one else visible — why was this left?",   "visible": false, "reveal_memory_tag": "bees"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Take the honey quickly",
+          "outcome": {
+            "type": "failure",
+            "description": "The buzzing erupts. The honey was being guarded. A swarm pours from the canopy. This was near their territory all along.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Honey Near Bee Territory",
+              "description": "Honey left near buzzing trees = bee territory. Taking it without checking was a mistake.",
+              "category": "contextual",
+              "traits": ["honey attracts bees", "honey near buzzing = bee territory", "dangerous to take without caution"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "buzzing near honey source", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "with",     "value": "honey",   "modifier": "bees_nearby",  "confidence": 0.88, "discovered": true},
+                {"condition": "location", "value": "near_nest","modifier": "dangerous",   "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.85,
+              "memory_strength": 0.78,
+              "uncertainty": 0.15,
+              "reliability": 0.90,
+              "merge_hint": "bees"
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Remember: honey + buzzing = danger. Leave it.",
+          "prerequisite_memory_tag": "bees",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "You connect the cues. Honey here, buzzing nearby. This is their territory. You leave it and walk calmly past. The bees ignore you.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bees + Honey Context",
+              "description": "Honey near buzzing trees = active bee territory. Recognizing the combination prevented an attack.",
+              "category": "contextual",
+              "traits": ["multi-cue pattern", "honey+buzzing=bees active", "contextual awareness prevents damage"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "honey visible",        "reliability": 0.85},
+                {"sense": "sound",  "description": "buzzing sound nearby", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "with", "value": "honey+buzzing", "modifier": "bee_territory_active", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": 0.15,
+              "confidence": 0.85,
+              "memory_strength": 0.72,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "encounters": [
+    {
+      "id": "enc_claw_marks_warning",
+      "title": "The Marked Trail",
+      "description": "Fresh claw marks on the trees ahead. Deep, wide, at shoulder height. The musky smell is present. You need to decide your path.",
+      "scene_type": "forest",
+      "tags": ["bear", "claw_marks", "warning", "contextual"],
+      "relevant_memory_tags": ["claw marks", "bear territory", "bear nearby"],
+      "misleading_memory_tags": [],
+      "success_text": "You read the territory markers and detour. No bear encounter at all.",
+      "failure_text": "You ignore the marks. A bear confrontation follows — unprepared.",
+      "partial_text": "You hesitate but get through. Stressed, but uninjured.",
+      "health_on_success": 5,
+      "health_on_failure": -22,
+      "health_on_no_memory": -20,
+      "night_range": [4, 10],
+      "weight": 1.2
+    },
+    {
+      "id": "enc_stagnant_water_thirst",
+      "title": "Desperate Thirst",
+      "description": "You haven't had water in hours. There are two sources: a dark murky pool, and a distant sound of running water. The running water is far — the pool is right here.",
+      "scene_type": "river",
+      "tags": ["water", "danger", "choice", "contextual"],
+      "relevant_memory_tags": ["stagnant water dangerous", "clear water safe", "murky dangerous"],
+      "misleading_memory_tags": ["water is water", "just thirsty"],
+      "success_text": "Your memory of the clear stream and the poisoned pool guides you. You hike to the running water. Clean. Worth it.",
+      "failure_text": "You drink from the pool. Hours later, you're violently ill.",
+      "partial_text": "You hesitate, drink a tiny amount, and suffer a minor illness.",
+      "health_on_success": 8,
+      "health_on_failure": -28,
+      "health_on_no_memory": -15,
+      "night_range": [4, 12],
+      "weight": 1.1
+    },
+    {
+      "id": "enc_bees_with_smoke",
+      "title": "The Hungry Day",
+      "description": "You're low on food. A bee nest is visible — full of honey. You have a lit torch. Do you know what to do?",
+      "scene_type": "forest",
+      "tags": ["bees", "honey", "smoke", "food", "contextual"],
+      "relevant_memory_tags": ["smoke calms bees", "bees+smoke=safe", "fire smoke"],
+      "misleading_memory_tags": ["bees dangerous", "run from bees"],
+      "success_text": "You use the torch to smoke the nest gently. The bees retreat. You harvest the honey safely. A full meal.",
+      "failure_text": "You approach without smoke. The bees attack immediately.",
+      "partial_text": "You try to use smoke but do it wrong — partial stings, some honey.",
+      "health_on_success": 20,
+      "health_on_failure": -20,
+      "health_on_no_memory": -18,
+      "night_range": [5, 12],
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,359 @@
+{
+  "_comment": "Night 10-15 events: false memories, memory overload, complex merges, layered contextual rules, mastery-level decisions.",
+  "events": [
+    {
+      "id": "evt_false_mushroom_merge",
+      "title": "New Mushrooms — Similar, but Different",
+      "description": "Pale mushrooms. But these have a slightly different shape: the cap is flatter, the stem thicker. Otherwise they look nearly identical to the ones you've eaten safely before.",
+      "scene_type": "forest",
+      "tags": ["mushroom", "ambiguous", "false_memory_risk", "dangerous"],
+      "category": "ambiguous",
+      "emotional_value": 0.10,
+      "night_range": [10, 15],
+      "weight": 1.2,
+      "prerequisite_memory_tags": ["mushroom"],
+      "cues": [
+        {"sense": "visual", "description": "Pale mushrooms — similar to known edible ones, but cap shape is slightly different", "visible": true},
+        {"sense": "smell",  "description": "Slightly more pungent than the edible ones you remember",                          "visible": true},
+        {"sense": "contextual", "description": "Growing in a different spot — damper ground, near water",                     "visible": false, "reveal_memory_tag": "mushroom"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat them — same as before",
+          "outcome": {
+            "type": "failure",
+            "description": "These are NOT the same. Within hours, severe nausea. You've confused two similar-looking species. A dangerous overgeneralization.",
+            "health_change": -25,
+            "memory_reward": {
+              "title": "Toxic Lookalike Mushrooms",
+              "description": "Almost identical to edible ones but toxic. Flat cap, thick stem, growing near water. Dangerous overgeneralization nearly killed me.",
+              "category": "danger",
+              "traits": ["toxic", "pale", "flat cap", "thick stem", "near water", "dangerous lookalike"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "flat cap (different from rounded edible ones)", "reliability": 0.90},
+                {"sense": "smell",  "description": "more pungent smell than edible variety",        "reliability": 0.85},
+                {"sense": "contextual", "description": "growing near water, not in dry forest",     "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "location",  "value": "near_water", "modifier": "dangerous_variant", "confidence": 0.88, "discovered": true},
+                {"condition": "shape",     "value": "flat_cap",   "modifier": "different_species", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.75,
+              "confidence": 0.88,
+              "memory_strength": 0.82,
+              "uncertainty": 0.12,
+              "reliability": 0.92
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Look more carefully — something is slightly different",
+          "mastery_required": 2,
+          "outcome": {
+            "type": "success",
+            "description": "You notice: flatter cap, different stem, wetter ground. Not the same species. You leave them. Refinement of a memory prevents a serious mistake.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Mushroom Lookalikes",
+              "description": "Not all pale spotted mushrooms are the same. Context matters: location, cap shape, smell all distinguish edible from toxic.",
+              "category": "contextual",
+              "traits": ["similar appearance can be different species", "flat cap = different", "location matters", "smell difference matters"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "cap shape distinguishes species",     "reliability": 0.88},
+                {"sense": "smell",  "description": "pungency difference between species", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "location", "value": "near_water", "modifier": "check_identity",    "confidence": 0.85, "discovered": true},
+                {"condition": "shape",    "value": "flat_cap",   "modifier": "different_species",  "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.20,
+              "confidence": 0.82,
+              "memory_strength": 0.75,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_layered_wolf_fire",
+      "title": "Wolves at the Firelight",
+      "description": "Night camp. Your small fire crackles. In the trees, you hear howling — but the wolves don't approach. They circle at the edge of the light, watching.",
+      "scene_type": "camp",
+      "tags": ["wolf", "fire", "night", "contextual", "relational"],
+      "category": "contextual",
+      "emotional_value": -0.35,
+      "night_range": [10, 15],
+      "weight": 1.0,
+      "prerequisite_memory_tags": ["wolf", "fire"],
+      "cues": [
+        {"sense": "sound",   "description": "Wolf howling — multiple, circling",                   "visible": true},
+        {"sense": "visual",  "description": "Eyes reflecting firelight at the tree line",          "visible": true},
+        {"sense": "contextual", "description": "Wolves approach the light then pull back",        "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Keep the fire burning and stay close to it",
+          "mastery_required": 2,
+          "prerequisite_memory_tag": "fire",
+          "outcome": {
+            "type": "success",
+            "description": "The fire holds. All night, the wolves pace the perimeter but never enter the light. By dawn they're gone. Fire repels wolves. A crucial multi-cue connection.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Fire Repels Wolves",
+              "description": "Wolves approached firelight but would not enter it. Fire = protection from wolves at night.",
+              "category": "contextual",
+              "traits": ["fire repels wolves", "wolves fear flames", "fire + night = wolf protection"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "wolves retreat from firelight", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "with",        "value": "fire",       "modifier": "wolves_repelled",  "confidence": 0.88, "discovered": true},
+                {"condition": "time_of_day", "value": "night",      "modifier": "fire_critical",    "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.30,
+              "confidence": 0.85,
+              "memory_strength": 0.78,
+              "uncertainty": 0.15,
+              "reliability": 0.90,
+              "merge_hint": "wolf"
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Let the fire die — save fuel",
+          "outcome": {
+            "type": "failure",
+            "description": "When the embers fade, the wolves move in. In darkness, they're far more confident. You climb a tree barely in time. Freezing and frightened all night.",
+            "health_change": -15,
+            "memory_reward": {
+              "title": "Fire Protects at Night",
+              "description": "Extinguished fire = wolves entered camp immediately. Fire is critical at night in wolf territory.",
+              "category": "contextual",
+              "traits": ["fire keeps wolves away", "darkness empowers wolves", "fire must burn all night"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [
+                {"condition": "with",        "value": "no_fire",   "modifier": "wolf_danger",      "confidence": 0.92, "discovered": true},
+                {"condition": "time_of_day", "value": "night",     "modifier": "fire_critical",    "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_bear_with_cubs",
+      "title": "Bears — With Cubs",
+      "description": "A bear. But not alone. Two small cubs tumble around her feet. She is between you and the path forward. Her ears are flat. Her posture is rigid.",
+      "scene_type": "forest",
+      "tags": ["bear", "cubs", "danger_extreme", "contextual"],
+      "category": "danger",
+      "emotional_value": -0.85,
+      "night_range": [8, 15],
+      "weight": 0.9,
+      "prerequisite_memory_tags": ["bear"],
+      "cues": [
+        {"sense": "visual",    "description": "Mother bear with two cubs — ears flat, rigid posture",  "visible": true},
+        {"sense": "contextual","description": "Cubs playing — mother is in protective mode",           "visible": true},
+        {"sense": "smell",     "description": "Strong musky odor, more intense than usual",            "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Extreme caution — back away immediately without any sound",
+          "mastery_required": 3,
+          "prerequisite_memory_tag": "bear",
+          "outcome": {
+            "type": "success",
+            "description": "A bear with cubs is categorically more dangerous. You back away in complete silence. Your understanding saves you — this situation needed a different response than a lone bear.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Mother Bear + Cubs",
+              "description": "Bear with cubs = extreme danger regardless of normal safety rules. Completely silent retreat required. Standard rules don't apply.",
+              "category": "danger",
+              "traits": ["mother bear extremely aggressive", "cubs = maximum danger", "silence critical", "normal rules don't apply"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "bear with small cubs nearby",  "reliability": 0.98},
+                {"sense": "visual", "description": "flat ears, rigid posture",     "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "with",     "value": "cubs",     "modifier": "extreme_danger",   "confidence": 0.96, "discovered": true},
+                {"condition": "behavior", "value": "silent",   "modifier": "safest_response",  "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.90,
+              "confidence": 0.92,
+              "memory_strength": 0.90,
+              "uncertainty": 0.08,
+              "reliability": 0.96
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Back away slowly like before",
+          "outcome": {
+            "type": "failure",
+            "description": "You apply the usual rule — back away slowly, keep eye contact. But this isn't the usual situation. With cubs present, the mother charges immediately. Severe injuries.",
+            "health_change": -35,
+            "memory_reward": {
+              "title": "Bears with Cubs (Wrong Response)",
+              "description": "Used slow retreat on mother bear with cubs — she charged immediately. Mother bears require different rules: faster retreat, no eye contact.",
+              "category": "danger",
+              "traits": ["mother bear = different rules", "slow retreat not enough", "context changes everything"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [
+                {"condition": "with",  "value": "cubs", "modifier": "extreme_danger",           "confidence": 0.95, "discovered": true},
+                {"condition": "with",  "value": "cubs", "modifier": "slow_retreat_insufficient", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.95,
+              "confidence": 0.95,
+              "memory_strength": 0.92,
+              "uncertainty": 0.05,
+              "reliability": 0.98
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_memory_overload",
+      "title": "Too Much at Once",
+      "description": "A complex scene: smoke in the trees, a buzzing hollow ahead, claw marks on the bark to your left, and the light is fading. Multiple threats, multiple cues, simultaneously.",
+      "scene_type": "forest",
+      "tags": ["multi-threat", "overload", "contextual", "mastery"],
+      "category": "contextual",
+      "emotional_value": -0.50,
+      "night_range": [11, 15],
+      "weight": 0.8,
+      "cues": [
+        {"sense": "visual", "description": "Smoke from northeast",                        "visible": true},
+        {"sense": "sound",  "description": "Buzzing from hollow tree ahead",              "visible": true},
+        {"sense": "visual", "description": "Claw marks on bark to the left",              "visible": true},
+        {"sense": "contextual","description":"Light is fading — dusk approaching rapidly","visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Process each cue: smoke=fire(avoid), buzzing=bees(don't disturb), claws=bear territory(detour), dusk=wolves active(find safety now)",
+          "mastery_required": 4,
+          "outcome": {
+            "type": "success",
+            "description": "You parse the cues methodically. Detour south: avoids the smoke, bypasses the bee nest, exits bear territory, reaches open ground before full dark. Masterful recall under pressure.",
+            "health_change": 5,
+            "memory_reward": {
+              "title": "Multi-Cue Navigation",
+              "description": "Successfully processed smoke, bees, bear claw marks, and dusk timing simultaneously. Integrated memory knowledge under pressure.",
+              "category": "contextual",
+              "traits": ["multi-cue integration", "pressure decision-making", "rapid recall", "mastery-level navigation"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [],
+              "emotional_weight": 0.40,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Pick the most obvious threat and react to that",
+          "outcome": {
+            "type": "mixed",
+            "description": "You focus on one cue and ignore the others. You avoid the bear area but walk straight into the bee territory. Partial success, partial failure. Complex scenes need complex responses.",
+            "health_change": -15,
+            "memory_reward": {
+              "title": "Tunnel Vision",
+              "description": "Focusing on one threat caused me to ignore others. Complex scenes require reading all cues together.",
+              "category": "contextual",
+              "traits": ["must read all cues together", "tunnel vision is dangerous", "integration required"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [],
+              "emotional_weight": -0.40,
+              "confidence": 0.75,
+              "memory_strength": 0.70,
+              "uncertainty": 0.25,
+              "reliability": 0.80
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "encounters": [
+    {
+      "id": "enc_bear_cubs",
+      "title": "The Most Dangerous Kind",
+      "description": "A bear with cubs blocks your path. Your previous bear knowledge is relevant — but is it sufficient for this situation?",
+      "scene_type": "forest",
+      "tags": ["bear", "cubs", "extreme_danger"],
+      "relevant_memory_tags": ["mother bear cubs dangerous", "extreme danger cubs", "silent retreat"],
+      "misleading_memory_tags": ["slow retreat", "back away slowly", "eye contact"],
+      "success_text": "Your memory of cubs changes everything. Silent, fast retreat. She doesn't charge.",
+      "failure_text": "You apply the wrong bear rules. Severe attack.",
+      "partial_text": "You hesitate, apply a mix. Minor injury before escape.",
+      "health_on_success": 0,
+      "health_on_failure": -35,
+      "health_on_no_memory": -25,
+      "night_range": [8, 15],
+      "weight": 1.0
+    },
+    {
+      "id": "enc_wolf_fire_camp",
+      "title": "Night Camp, No Fire",
+      "description": "You're exhausted and need to sleep. No wood nearby for a fire. The howling starts shortly after you make camp.",
+      "scene_type": "camp",
+      "tags": ["wolf", "fire", "night", "danger"],
+      "relevant_memory_tags": ["fire repels wolves", "fire at night critical", "wolves fear fire"],
+      "misleading_memory_tags": ["run", "climb tree"],
+      "success_text": "You remember — fire is the key. You spend an hour finding wood. The fire holds all night. Wolves circle but don't enter.",
+      "failure_text": "No fire, no protection. The wolves enter camp.",
+      "partial_text": "You find some fuel but the fire is weak. Wolves approach but a torch keeps them back.",
+      "health_on_success": 0,
+      "health_on_failure": -30,
+      "health_on_no_memory": -28,
+      "night_range": [10, 15],
+      "weight": 1.0
+    },
+    {
+      "id": "enc_mushroom_crisis",
+      "title": "The Only Food Available",
+      "description": "You haven't eaten in two days. In front of you are pale mushrooms. They look familiar — but are they the safe ones or the lookalikes?",
+      "scene_type": "forest",
+      "tags": ["mushroom", "food", "dangerous", "false_memory_test"],
+      "relevant_memory_tags": ["rounded cap edible", "flat cap toxic", "location near water dangerous", "smell difference"],
+      "misleading_memory_tags": ["pale mushrooms safe", "spotted mushrooms edible"],
+      "success_text": "Your refined memory guides you: check cap shape, smell, location. These are the safe variety. You eat carefully.",
+      "failure_text": "You trusted a vague memory. These are the toxic lookalike. Severe illness.",
+      "partial_text": "You eat cautiously, one piece. Minor stomach upset — wrong mushroom, but very little eaten.",
+      "health_on_success": 20,
+      "health_on_failure": -30,
+      "health_on_no_memory": -10,
+      "night_range": [10, 15],
+      "weight": 1.1
+    }
+  ]
+}

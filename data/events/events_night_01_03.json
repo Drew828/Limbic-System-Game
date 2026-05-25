@@ -1,0 +1,785 @@
+{
+  "_comment": "Night 1-3 events: simple labels, obvious danger, basic encoding. Player learns core associations: bear=danger, berries=food, fire=danger, smoke=warning.",
+  "events": [
+    {
+      "id": "evt_bear_first",
+      "title": "Shape on the Path",
+      "description": "The trees thin and you see the path clearly ahead. A large brown shape blocks the way, tearing at a rotting log. It hasn't noticed you yet. The air carries a thick, musky odor.",
+      "scene_type": "forest",
+      "tags": ["bear", "danger", "animal", "forest"],
+      "category": "danger",
+      "emotional_value": -0.70,
+      "night_range": [1, 4],
+      "weight": 1.8,
+      "cues": [
+        {"sense": "visual",  "description": "Large brown shape on the path, hunched over a log", "visible": true},
+        {"sense": "smell",   "description": "Thick, musky animal odor", "visible": true},
+        {"sense": "sound",   "description": "Heavy snuffling and wood-splintering", "visible": true},
+        {"sense": "contextual", "description": "Claw marks carved deep into nearby bark", "visible": false, "reveal_memory_tag": "bear"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Run back the way you came",
+          "outcome": {
+            "type": "mixed",
+            "description": "You sprint back down the trail. Behind you, a roar — but it doesn't follow far. Your legs ache and your heart pounds. You've lost time but escaped.",
+            "health_change": -8,
+            "memory_reward": {
+              "title": "Bear",
+              "description": "A large, powerful animal. Approached it — it roared. Running away worked, but cost energy.",
+              "category": "danger",
+              "traits": ["large", "dangerous", "brown", "in forests"],
+              "hidden_traits": ["avoids direct confrontation if given space", "most active at dusk"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "musky animal odor",      "reliability": 0.9},
+                {"sense": "visual", "description": "claw marks on tree bark","reliability": 0.85},
+                {"sense": "sound",  "description": "heavy snuffling or growling","reliability": 0.8}
+              ],
+              "context_rules": [
+                {"condition": "proximity", "value": "close",  "modifier": "dangerous", "confidence": 0.7, "discovered": true},
+                {"condition": "proximity", "value": "far",    "modifier": "safe",      "confidence": 0.4, "discovered": false}
+              ],
+              "emotional_weight": -0.75,
+              "confidence": 0.70,
+              "memory_strength": 0.60,
+              "uncertainty": 0.30,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Back away slowly, keep your eyes on it",
+          "outcome": {
+            "type": "success",
+            "description": "You retreat slowly, never breaking eye contact. The bear raises its head, watches you for a long moment, then returns to the log. You find another path around.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bear",
+              "description": "Backing away slowly let me pass safely. It only watched me — it wasn't hunting.",
+              "category": "danger",
+              "traits": ["large", "powerful", "in forests", "not always aggressive"],
+              "hidden_traits": ["will charge if startled", "claw marks on bark warn of territory"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "musky animal odor",       "reliability": 0.9},
+                {"sense": "visual", "description": "claw marks on tree bark", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "proximity", "value": "close",     "modifier": "dangerous",  "confidence": 0.65, "discovered": true},
+                {"condition": "behavior",  "value": "slow_retreat","modifier": "safe",     "confidence": 0.75, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.75,
+              "memory_strength": 0.65,
+              "uncertainty": 0.25,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c3",
+          "text": "Shout and wave your arms to scare it off",
+          "outcome": {
+            "type": "failure",
+            "description": "The bear wheels around and charges. You barely dodge into the brush. A massive paw clips your shoulder before it loses interest. You're shaken and bleeding.",
+            "health_change": -22,
+            "memory_reward": {
+              "title": "Bear",
+              "description": "Tried to scare it — it charged. Loud noise made it more dangerous, not less.",
+              "category": "danger",
+              "traits": ["large", "dangerous", "charges when startled", "in forests"],
+              "hidden_traits": ["responds to noise differently depending on season"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "musky animal odor", "reliability": 0.9}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "sudden_noise", "modifier": "dangerous", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.90,
+              "confidence": 0.80,
+              "memory_strength": 0.80,
+              "uncertainty": 0.20,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_berries_simple",
+      "title": "Berry Bush",
+      "description": "A cluster of bright red berries hangs at eye level beside the trail. They look plump and fresh. Your stomach growls.",
+      "scene_type": "forest",
+      "tags": ["berries", "food", "plant", "red"],
+      "category": "food",
+      "emotional_value": 0.30,
+      "night_range": [1, 5],
+      "weight": 1.6,
+      "cues": [
+        {"sense": "visual", "description": "Bright red berries on a leafy bush", "visible": true},
+        {"sense": "smell",  "description": "Sweet, mild fruity scent",           "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat the berries",
+          "outcome": {
+            "type": "success",
+            "description": "Sweet and slightly tart. Your energy returns. These are safe. You recognise them — you've seen them before somewhere.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Red Berries",
+              "description": "Bright red berries from a leafy forest bush. Tasted good, restored energy.",
+              "category": "food",
+              "traits": ["edible", "red", "sweet", "restores energy"],
+              "hidden_traits": ["similar-looking white berries are toxic"],
+              "cue_tags": [
+                {"sense": "visual", "description": "bright red color",   "reliability": 0.80},
+                {"sense": "smell",  "description": "sweet fruity scent", "reliability": 0.75}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.35,
+              "confidence": 0.70,
+              "memory_strength": 0.55,
+              "uncertainty": 0.35,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — you're not sure",
+          "outcome": {
+            "type": "neutral",
+            "description": "Better safe. You note the location and move on. Hunger gnaws at you.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Unidentified Berries",
+              "description": "Red berries. Not sure if edible. Left them.",
+              "category": "ambiguous",
+              "traits": ["red", "unknown", "might be edible"],
+              "hidden_traits": ["these specific ones are safe"],
+              "cue_tags": [
+                {"sense": "visual", "description": "bright red color", "reliability": 0.60}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.10,
+              "confidence": 0.30,
+              "memory_strength": 0.40,
+              "uncertainty": 0.70,
+              "reliability": 0.50,
+              "merge_hint": "evt_berries_simple"
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_fire_first",
+      "title": "Burning Camp",
+      "description": "Ahead, an abandoned camp. The remains of a fire still burn low, orange coals glowing in a circle of stones. A wave of heat reaches you from ten feet away.",
+      "scene_type": "camp",
+      "tags": ["fire", "heat", "danger", "camp"],
+      "category": "danger",
+      "emotional_value": -0.40,
+      "night_range": [1, 4],
+      "weight": 1.5,
+      "cues": [
+        {"sense": "visual",  "description": "Orange-red glowing coals, flickering flames",    "visible": true},
+        {"sense": "smell",   "description": "Smoke and burning wood",                          "visible": true},
+        {"sense": "tactile", "description": "Waves of heat radiating outward",                 "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Walk through the camp quickly",
+          "outcome": {
+            "type": "failure",
+            "description": "The heat is more intense than you expected. You stumble over a burning branch and scorch your arm badly.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Fire",
+              "description": "Walked too close. The heat was worse than it looked. Burns hurt.",
+              "category": "danger",
+              "traits": ["hot", "dangerous", "burns", "at camps"],
+              "hidden_traits": ["smoke visible from far away as a warning"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "orange glow or flames",       "reliability": 0.95},
+                {"sense": "smell",   "description": "smoke smell",                 "reliability": 0.90},
+                {"sense": "tactile", "description": "heat radiating from a distance","reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "proximity", "value": "close",  "modifier": "dangerous", "confidence": 0.95, "discovered": true}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.85,
+              "memory_strength": 0.75,
+              "uncertainty": 0.15,
+              "reliability": 0.95
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Go around the camp, keeping distance",
+          "outcome": {
+            "type": "success",
+            "description": "You skirt wide of the fire. Warm, but manageable. You notice the smoke trail rising — it's been burning a while and no one is tending it.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Fire",
+              "description": "Fire is dangerous close up, but safe from a distance. Smoke warned of it before I could see it.",
+              "category": "danger",
+              "traits": ["hot", "dangerous when close", "visible from distance"],
+              "hidden_traits": ["can be used for warmth at safe distance", "attracts insects at night"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "smoke smell",                    "reliability": 0.90},
+                {"sense": "visual", "description": "smoke rising above trees",       "reliability": 0.85},
+                {"sense": "visual", "description": "orange glow at night",           "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "proximity", "value": "close",    "modifier": "dangerous", "confidence": 0.90, "discovered": true},
+                {"condition": "proximity", "value": "far",      "modifier": "warning",   "confidence": 0.70, "discovered": true}
+              ],
+              "emotional_weight": -0.35,
+              "confidence": 0.80,
+              "memory_strength": 0.65,
+              "uncertainty": 0.20,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_smoke_trail",
+      "title": "Smoke in the Trees",
+      "description": "A thin column of grey smoke rises from somewhere ahead in the forest. You can't see the source. The trail leads directly that way.",
+      "scene_type": "forest",
+      "tags": ["smoke", "warning", "fire", "forest"],
+      "category": "sensory",
+      "emotional_value": -0.30,
+      "night_range": [1, 6],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "visual", "description": "Grey smoke column rising through tree canopy", "visible": true},
+        {"sense": "smell",  "description": "Faint burning wood scent on the breeze",       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Investigate carefully",
+          "prerequisite_memory_tag": "",
+          "outcome": {
+            "type": "mixed",
+            "description": "You follow the smoke to a dying campfire — recently abandoned. Useful to know the area is travelled, but it cost you time.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Smoke",
+              "description": "Smoke means fire nearby. Found a dying campfire when I followed it.",
+              "category": "sensory",
+              "traits": ["warning cue", "indicates fire", "visible from distance"],
+              "hidden_traits": ["can also mean a village or camp ahead"],
+              "cue_tags": [
+                {"sense": "visual", "description": "grey smoke column in sky", "reliability": 0.88},
+                {"sense": "smell",  "description": "burning wood on breeze",   "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "with", "value": "fire", "modifier": "warns_of", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.20,
+              "confidence": 0.72,
+              "memory_strength": 0.55,
+              "uncertainty": 0.30,
+              "reliability": 0.85,
+              "merge_hint": "fire"
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Detour around the smoke source",
+          "outcome": {
+            "type": "neutral",
+            "description": "You loop through thick undergrowth, adding time to your journey. Whatever was smoking is never seen. Safe, but slow.",
+            "health_change": -5,
+            "memory_reward": {
+              "title": "Smoke",
+              "description": "Smoke in the trees — avoided it. Seemed like a warning.",
+              "category": "sensory",
+              "traits": ["warning cue", "uncertain source"],
+              "hidden_traits": ["could be friendly camp or dangerous fire"],
+              "cue_tags": [
+                {"sense": "smell", "description": "burning smell on breeze", "reliability": 0.80}
+              ],
+              "context_rules": [],
+              "emotional_weight": -0.15,
+              "confidence": 0.45,
+              "memory_strength": 0.40,
+              "uncertainty": 0.55,
+              "reliability": 0.60
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_stream_fresh",
+      "title": "Rushing Stream",
+      "description": "A narrow stream crosses the trail, maybe knee-deep. The water is clear and fast-moving. You're thirsty from the morning's walk.",
+      "scene_type": "river",
+      "tags": ["water", "stream", "food", "drink"],
+      "category": "food",
+      "emotional_value": 0.25,
+      "night_range": [1, 8],
+      "weight": 1.4,
+      "cues": [
+        {"sense": "visual", "description": "Clear water over clean pebbles, fast current", "visible": true},
+        {"sense": "sound",  "description": "Babbling rush of clean water",                 "visible": true},
+        {"sense": "smell",  "description": "Fresh, cool, earthy",                          "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Drink and cross",
+          "outcome": {
+            "type": "success",
+            "description": "Clean, cold water. Your thirst is quenched and your energy restored. The crossing is easy — ankle-deep at most.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Clear Stream",
+              "description": "Fast-moving, clear water over pebbles. Safe to drink. Easy to cross.",
+              "category": "food",
+              "traits": ["safe", "drinkable", "clear", "fast-moving", "shallow"],
+              "hidden_traits": ["still water may be stagnant", "flooded streams are dangerous"],
+              "cue_tags": [
+                {"sense": "visual", "description": "clear water, can see bottom", "reliability": 0.85},
+                {"sense": "sound",  "description": "fast rushing sound",          "reliability": 0.75},
+                {"sense": "smell",  "description": "fresh clean smell",           "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "clarity", "value": "clear",    "modifier": "safe",      "confidence": 0.75, "discovered": true},
+                {"condition": "flow",    "value": "fast",     "modifier": "drinkable", "confidence": 0.70, "discovered": true}
+              ],
+              "emotional_weight": 0.30,
+              "confidence": 0.72,
+              "memory_strength": 0.55,
+              "uncertainty": 0.28,
+              "reliability": 0.82
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_growling_thicket",
+      "title": "Something in the Thicket",
+      "description": "A dark thicket of brambles crowds the left side of the trail. From deep inside, you hear a low, rumbling growl. You can't see what's making it.",
+      "scene_type": "forest",
+      "tags": ["bear", "danger", "sound", "forest", "ambiguous"],
+      "category": "ambiguous",
+      "emotional_value": -0.55,
+      "night_range": [2, 6],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "sound",   "description": "Deep, continuous rumbling growl", "visible": true},
+        {"sense": "smell",   "description": "Faint musky animal scent",        "visible": false, "reveal_memory_tag": "bear"},
+        {"sense": "visual",  "description": "Branches moving in the thicket",  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Freeze and wait",
+          "outcome": {
+            "type": "success",
+            "description": "After a long moment, the growling subsides. Whatever it was, it didn't come closer. You edge past carefully.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Growling Sound",
+              "description": "Low growl from thicket — froze and waited, it passed. Growling is a warning.",
+              "category": "sensory",
+              "traits": ["danger cue", "animal warning", "freeze response works"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "low rumbling growl in brush", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "sound", "value": "growling", "modifier": "animal_nearby", "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.70,
+              "memory_strength": 0.60,
+              "uncertainty": 0.30,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Throw a rock into the thicket",
+          "outcome": {
+            "type": "failure",
+            "description": "An enormous bear explodes from the undergrowth, charging straight at you. You barely make it up a tree in time. It circles for ten minutes before leaving. You've lost time and your nerves are wrecked.",
+            "health_change": -10,
+            "memory_reward": {
+              "title": "Bear",
+              "description": "Hidden in thicket. Throwing rocks at it made it charge. Growling sound was the only warning.",
+              "category": "danger",
+              "traits": ["hides in thickets", "charges when provoked", "growling warns of presence"],
+              "hidden_traits": ["avoids confrontation if given escape route"],
+              "cue_tags": [
+                {"sense": "sound", "description": "low rumbling growl", "reliability": 0.92},
+                {"sense": "smell", "description": "musky animal odor",  "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "behavior",  "value": "provoked",   "modifier": "charges",   "confidence": 0.90, "discovered": true},
+                {"condition": "proximity", "value": "hidden",     "modifier": "dangerous", "confidence": 0.75, "discovered": true}
+              ],
+              "emotional_weight": -0.85,
+              "confidence": 0.85,
+              "memory_strength": 0.80,
+              "uncertainty": 0.15,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_mushroom_unknown",
+      "title": "Cluster of Mushrooms",
+      "description": "A ring of pale mushrooms grows around the base of an old oak. They look firm and fresh. Some have distinctive brown spots.",
+      "scene_type": "forest",
+      "tags": ["mushroom", "food", "plant", "ambiguous"],
+      "category": "ambiguous",
+      "emotional_value": 0.10,
+      "night_range": [2, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Pale white mushrooms with brown spots on caps", "visible": true},
+        {"sense": "smell",  "description": "Earthy, slightly damp",                         "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat a few",
+          "outcome": {
+            "type": "mixed",
+            "description": "They taste bland but not unpleasant. Hours later — nothing bad. These seem safe. But you're not certain.",
+            "health_change": 5,
+            "memory_reward": {
+              "title": "Spotted Mushrooms",
+              "description": "Pale with brown spots. Ate some — felt okay. Might be safe.",
+              "category": "ambiguous",
+              "traits": ["pale", "brown spots", "forest floor", "possibly edible"],
+              "hidden_traits": ["require 3+ exposures to confidently identify", "similar mushrooms vary by region"],
+              "cue_tags": [
+                {"sense": "visual", "description": "pale white with brown spots", "reliability": 0.65}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.05,
+              "confidence": 0.40,
+              "memory_strength": 0.45,
+              "uncertainty": 0.60,
+              "reliability": 0.55
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them",
+          "outcome": {
+            "type": "neutral",
+            "description": "You leave the mushrooms. You don't know enough. Better to go hungry than sick.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Unknown Mushrooms",
+              "description": "Pale mushrooms in a ring. Didn't eat — don't know if safe.",
+              "category": "ambiguous",
+              "traits": ["pale", "spotted", "unknown"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "pale mushrooms with spots", "reliability": 0.50}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.0,
+              "confidence": 0.20,
+              "memory_strength": 0.35,
+              "uncertainty": 0.80,
+              "reliability": 0.30
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wolf_distant",
+      "title": "Howl at Dusk",
+      "description": "As the sky turns orange, a long, mournful howl echoes from somewhere in the trees to your north. Then another, closer. The forest goes quiet.",
+      "scene_type": "forest",
+      "tags": ["wolf", "danger", "sound", "dusk"],
+      "category": "danger",
+      "emotional_value": -0.60,
+      "night_range": [2, 8],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "sound",   "description": "Long howling from two directions", "visible": true},
+        {"sense": "visual",  "description": "Forest animals suddenly silent",    "visible": true},
+        {"sense": "contextual", "description": "Dusk light, pack hunting time", "visible": false, "reveal_memory_tag": "wolf"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Find a tree to climb before dark",
+          "outcome": {
+            "type": "success",
+            "description": "Smart. You settle into a sturdy oak as darkness falls. Below, the shadows shift — wolves pass beneath you, never looking up. You spend the night uncomfortable but unharmed.",
+            "health_change": -5,
+            "memory_reward": {
+              "title": "Wolf",
+              "description": "Wolves hunt at dusk in packs. Howling warns they're coordinating. Climbing kept me safe.",
+              "category": "danger",
+              "traits": ["hunts in packs", "dangerous at dusk", "nocturnal hunter"],
+              "hidden_traits": ["less aggressive in open meadows", "avoids fire"],
+              "cue_tags": [
+                {"sense": "sound",      "description": "wolf howling",              "reliability": 0.92},
+                {"sense": "contextual", "description": "sudden forest silence",     "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "time_of_day", "value": "dusk",  "modifier": "dangerous", "confidence": 0.80, "discovered": true},
+                {"condition": "time_of_day", "value": "night", "modifier": "dangerous", "confidence": 0.85, "discovered": false}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.75,
+              "memory_strength": 0.70,
+              "uncertainty": 0.25,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Keep moving — you're almost through the forest",
+          "outcome": {
+            "type": "failure",
+            "description": "The howls converge. Three wolves emerge from the dark ahead. You run — they chase. You barely reach a rocky outcrop. Bites on your calf. You'll feel this for days.",
+            "health_change": -28,
+            "memory_reward": {
+              "title": "Wolf Pack",
+              "description": "Tried to outrun them at dusk. Wolves hunt together — they cut off my escape.",
+              "category": "danger",
+              "traits": ["pack hunters", "coordinate attacks", "fast runners"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "wolf howling", "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "time_of_day", "value": "dusk",  "modifier": "dangerous", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.90,
+              "confidence": 0.88,
+              "memory_strength": 0.85,
+              "uncertainty": 0.12,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_old_traveler",
+      "title": "A Traveler on the Road",
+      "description": "An old man sits resting by the road, a gnarled walking stick across his knees. He eyes you without alarm. 'You look new to these roads,' he says.",
+      "scene_type": "road",
+      "tags": ["person", "social", "information", "road"],
+      "category": "neutral",
+      "emotional_value": 0.20,
+      "night_range": [1, 5],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual",    "description": "Old man, road-worn clothes, calm expression", "visible": true},
+        {"sense": "contextual","description": "Well-used walking stick, experienced traveler","visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Stop and talk",
+          "outcome": {
+            "type": "success",
+            "description": "He tells you: 'Stay off the main road at dusk — wolves. And the berries on the north trail? Red ones are fine, white ones will kill you.' He waves you on.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Old Traveler's Advice",
+              "description": "A traveler warned me: wolves hunt at dusk, and white berries are dangerous unlike red ones.",
+              "category": "contextual",
+              "traits": ["wolves active at dusk", "white berries dangerous", "red berries safe"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "contextual", "description": "advice from experienced traveler", "reliability": 0.75}
+              ],
+              "context_rules": [
+                {"condition": "time_of_day", "value": "dusk", "modifier": "wolf_danger", "confidence": 0.70, "discovered": true},
+                {"condition": "color", "value": "white", "modifier": "berry_dangerous", "confidence": 0.75, "discovered": true}
+              ],
+              "emotional_weight": 0.25,
+              "confidence": 0.65,
+              "memory_strength": 0.60,
+              "uncertainty": 0.35,
+              "reliability": 0.72
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Nod and keep walking",
+          "outcome": {
+            "type": "neutral",
+            "description": "He watches you go. An opportunity missed, perhaps. You'll never know what he might have shared.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_bee_nest_intro",
+      "title": "Humming in the Hollow",
+      "description": "A hollow tree by the path emits a constant, buzzing hum. Something golden drips slowly from a crack in the bark. The buzzing intensifies as you step closer.",
+      "scene_type": "forest",
+      "tags": ["bees", "honey", "sensory", "danger_conditional"],
+      "category": "sensory",
+      "emotional_value": 0.15,
+      "night_range": [2, 7],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "sound",  "description": "Constant buzzing hum from inside tree",   "visible": true},
+        {"sense": "visual", "description": "Golden liquid dripping from bark crack",   "visible": true},
+        {"sense": "visual", "description": "Small insects flying around the opening",  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Try to take some honey",
+          "outcome": {
+            "type": "failure",
+            "description": "The moment your hand nears the crack, the buzzing erupts into a roar. A cloud of bees pours out. You run, swatting, but still take dozens of stings. That was a mistake.",
+            "health_change": -20,
+            "memory_reward": {
+              "title": "Bee Nest",
+              "description": "Bees in a hollow tree. Tried to take honey — attacked immediately. Very dangerous when disturbed.",
+              "category": "danger",
+              "traits": ["bees", "nest in hollow trees", "guards honey", "aggressive when disturbed"],
+              "hidden_traits": ["can be calmed with smoke", "honey safe to take after bees are calm"],
+              "cue_tags": [
+                {"sense": "sound", "description": "loud buzzing hum",          "reliability": 0.95},
+                {"sense": "visual","description": "insects around tree hollow", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "disturbed", "modifier": "dangerous", "confidence": 0.92, "discovered": true},
+                {"condition": "behavior", "value": "calm",      "modifier": "safe",      "confidence": 0.30, "discovered": false}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.82,
+              "memory_strength": 0.75,
+              "uncertainty": 0.18,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Observe from a distance",
+          "outcome": {
+            "type": "success",
+            "description": "You watch. Hundreds of bees orbit the hollow. Honey, yes — but not worth it. You note the location and continue. Someday you'll know how to approach safely.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bee Nest",
+              "description": "Honey in a hollow tree. Bees swarm it. Watched from distance — they ignored me.",
+              "category": "sensory",
+              "traits": ["bees live in hollow trees", "honey present", "buzzing is a warning"],
+              "hidden_traits": ["smoke can calm them", "approaching carefully when they're calm is possible"],
+              "cue_tags": [
+                {"sense": "sound", "description": "buzzing from tree hollow",  "reliability": 0.92},
+                {"sense": "visual","description": "golden drips on bark",      "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "disturbed", "modifier": "dangerous", "confidence": 0.85, "discovered": false},
+                {"condition": "proximity", "value": "close",    "modifier": "risky",     "confidence": 0.70, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.60,
+              "memory_strength": 0.55,
+              "uncertainty": 0.40,
+              "reliability": 0.78
+            }
+          }
+        }
+      ]
+    }
+  ],
+
+  "encounters": [
+    {
+      "id": "enc_bear_path",
+      "title": "The Bear Returns",
+      "description": "The same trail. The same musky smell. A shape moves in the trees ahead — large, brown, browsing. You need to pass.",
+      "scene_type": "forest",
+      "tags": ["bear", "forest", "danger"],
+      "relevant_memory_tags": ["bear", "dangerous", "slow_retreat", "backs away slowly"],
+      "misleading_memory_tags": ["shout", "noise"],
+      "success_text": "Your memory guides you. You back away steadily, eyes on the animal. It watches you go without interest. You find the way around.",
+      "failure_text": "You hesitate. Your response is wrong — you shout, or rush. The bear charges. You take a bad hit.",
+      "partial_text": "You retreat, but awkwardly. The bear notices and gives chase briefly. You escape, but it cost you.",
+      "health_on_success": 5,
+      "health_on_failure": -20,
+      "health_on_no_memory": -25,
+      "night_range": [1, 5],
+      "weight": 1.5
+    },
+    {
+      "id": "enc_fire_camp",
+      "title": "The Burning Ruins",
+      "description": "Smoke fills the air. A structure ahead is on fire. Your path runs through it — or around. The fire is larger than what you've seen before.",
+      "scene_type": "ruins",
+      "tags": ["fire", "smoke", "danger"],
+      "relevant_memory_tags": ["fire dangerous close", "go around", "smoke warning"],
+      "misleading_memory_tags": [],
+      "success_text": "You know smoke means danger, and fire means stay back. You circle wide and find the path continues on the far side.",
+      "failure_text": "You underestimate the fire. Walking through it burns you badly.",
+      "partial_text": "You navigate carefully but take some heat damage passing near the edge.",
+      "health_on_success": 0,
+      "health_on_failure": -22,
+      "health_on_no_memory": -18,
+      "night_range": [1, 5],
+      "weight": 1.3
+    },
+    {
+      "id": "enc_wolf_at_dusk",
+      "title": "Dusk — And Howling",
+      "description": "The light is going fast. From two sides of the trail, you hear howling. There's a large tree nearby and open ground ahead.",
+      "scene_type": "forest",
+      "tags": ["wolf", "dusk", "danger"],
+      "relevant_memory_tags": ["wolves dusk dangerous", "climb tree", "wolf howling warning"],
+      "misleading_memory_tags": ["run", "fight"],
+      "success_text": "You remember. Wolves at dusk, in the open — find height. You're up the tree before they emerge.",
+      "failure_text": "You try to outrun them. You can't. The pack encircles you.",
+      "partial_text": "You climb, but slowly. A wolf gets a bite in as you scramble upward.",
+      "health_on_success": 0,
+      "health_on_failure": -25,
+      "health_on_no_memory": -30,
+      "night_range": [2, 8],
+      "weight": 1.4
+    }
+  ]
+}

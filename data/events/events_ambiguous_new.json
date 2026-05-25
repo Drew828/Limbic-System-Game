@@ -1,0 +1,702 @@
+{
+  "_comment": "Ambiguous events: identical or near-identical appearances that can lead to very different outcomes depending on player knowledge and choices. ~20% of new pool. These events teach players to read subtle distinctions, and reward prior memory.",
+
+  "events": [
+
+    {
+      "id": "evt_glowing_cave_fungus",
+      "title": "Glowing Growth",
+      "description": "Deep in a cave alcove you notice a soft blue-green glow on the wall. A cluster of small mushroom-like growths coats the rock, each one faintly luminescent. They're unlike anything you've seen before.",
+      "scene_type": "cave",
+      "tags": ["fungus", "glowing", "cave", "ambiguous", "bioluminescence"],
+      "category": "ambiguous",
+      "emotional_value": 0.10,
+      "night_range": [4, 15],
+      "weight": 0.9,
+      "requires_absent_tags": ["glowing fungus"],
+      "cues": [
+        {"sense": "visual", "description": "Small mushroom-like growths glowing faint blue-green on rock", "visible": true},
+        {"sense": "smell",  "description": "Faintly musty — not unpleasant",                               "visible": true},
+        {"sense": "visual", "description": "No insects or animals near the growth despite nearby food sources", "visible": false, "reveal_memory_tag": "toxic fungus"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "The glow looks interesting — taste one",
+          "outcome": {
+            "type": "failure",
+            "description": "Bioluminescent doesn't mean safe. Your mouth numbs within minutes and your vision blurs by the hour. Whatever these were, they were not food.",
+            "health_change": -16,
+            "memory_reward": {
+              "title": "Glowing Cave Fungus",
+              "description": "Bioluminescent blue-green cave fungus. Toxic. Mouth numbing, vision disturbance. Glow is not a sign of safety — quite the opposite.",
+              "category": "danger",
+              "traits": ["toxic", "glowing fungus", "cave", "do not eat", "bioluminescence ≠ safe"],
+              "hidden_traits": ["no insects near it = another warning sign"],
+              "cue_tags": [
+                {"sense": "visual", "description": "blue-green glow in cave", "reliability": 0.72}
+              ],
+              "context_rules": [
+                {"condition": "appearance", "value": "bioluminescent", "modifier": "do_not_eat", "confidence": 0.82, "discovered": true},
+                {"condition": "sign",       "value": "no_insects_near","modifier": "likely_toxic","confidence": 0.78, "discovered": false}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.80,
+              "memory_strength": 0.80,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Observe it carefully without touching — notice anything around it?",
+          "outcome": {
+            "type": "neutral",
+            "description": "You look more carefully. No insects. No animal droppings nearby despite a rich environment. Nothing is eating this. That tells you something.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Glowing Cave Fungus",
+              "description": "Bioluminescent cave fungus — nothing eats it. No insects nearby despite rich habitat. If nothing wants to eat it, there's a reason. Avoid.",
+              "category": "ambiguous",
+              "traits": ["glowing fungus", "cave", "nothing eats it", "possible toxin", "observe before touching"],
+              "hidden_traits": ["some glowing fungi are safe — requires specific identification"],
+              "cue_tags": [
+                {"sense": "visual", "description": "blue-green glow on cave wall",              "reliability": 0.70},
+                {"sense": "visual", "description": "no insects or droppings near the growth",   "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "no_insects_near_food", "modifier": "possible_toxin", "confidence": 0.72, "discovered": true}
+              ],
+              "emotional_weight": -0.10,
+              "confidence": 0.55,
+              "memory_strength": 0.55,
+              "uncertainty": 0.45,
+              "reliability": 0.70
+            }
+          }
+        },
+        {
+          "id": "c3",
+          "text": "Check what you know — bioluminescence in fungi is usually a warning",
+          "mastery_required": 1,
+          "prerequisite_memory_tag": "glowing fungus",
+          "outcome": {
+            "type": "success",
+            "description": "You recall the pattern: no insects, no animal sign near it. Bioluminescent cave fungi in your experience are toxic. You mark the location and move on, wiser.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Glowing Cave Fungus (Confirmed)",
+              "description": "Bioluminescent cave fungus confirmed toxic by prior experience. Glow + no insects = reliable toxicity indicator in cave fungi.",
+              "category": "danger",
+              "traits": ["toxic confirmed", "glowing cave fungus", "no insects = toxin marker", "do not eat"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "blue-green bioluminescent growth, no insects near", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "combined", "value": "glow_plus_no_insects", "modifier": "toxic", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.20,
+              "confidence": 0.82,
+              "memory_strength": 0.72,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_dead_animal_trail",
+      "title": "Something Dead on the Path",
+      "description": "A deer carcass lies across the trail, partially eaten. The ribcage is open. Flies buzz. Whether this is old or fresh is hard to say from here — there's no visible predator.",
+      "scene_type": "forest",
+      "tags": ["dead animal", "predator", "danger", "ambiguous", "deer"],
+      "category": "ambiguous",
+      "emotional_value": -0.30,
+      "night_range": [2, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Deer carcass with open ribcage, partially consumed",  "visible": true},
+        {"sense": "smell",  "description": "Strong decay smell — flies buzzing heavily",           "visible": true},
+        {"sense": "visual", "description": "Claw marks on the flank larger than a wolf's",        "visible": false, "reveal_memory_tag": "bear"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Take a closer look — check if the kill is fresh",
+          "outcome": {
+            "type": "mixed",
+            "description": "Close up, the wounds are dried and the smell is several days old. Old kill — the predator is long gone. But you're right beside the carcass when a different bear arrives to reclaim it.",
+            "health_change": -10,
+            "memory_reward": {
+              "title": "Fresh Kill Site",
+              "description": "A predator kill site is a feeding ground — the predator returns. Old or new, avoid close approach. Claw size indicates the predator.",
+              "category": "danger",
+              "traits": ["predator site", "bears return", "avoid regardless of age", "claw size identifies animal"],
+              "hidden_traits": ["ravens circling above a spot = fresh kill below"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "heavy decay smell around carcass",              "reliability": 0.85},
+                {"sense": "visual", "description": "claw marks on flank, size indicates predator",  "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "sign",     "value": "carcass_on_trail",  "modifier": "predator_returns",  "confidence": 0.82, "discovered": true},
+                {"condition": "cue",      "value": "large_claw_marks",  "modifier": "bear_kill",         "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.80,
+              "memory_strength": 0.82,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Wide detour — you don't know who made this kill",
+          "outcome": {
+            "type": "success",
+            "description": "Smart instinct. From higher ground you see a large brown shape return to the kill site below. You were never on its radar.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Predator Kill — Avoid",
+              "description": "Any carcass on a trail is a predator feeding site — the predator will return. Wide detour regardless of how old the kill appears.",
+              "category": "danger",
+              "traits": ["kill site", "predator returns", "always detour", "old kill still dangerous"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "smell",  "description": "decay smell from partially eaten carcass", "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "animal_carcass", "modifier": "detour_always", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.30,
+              "confidence": 0.82,
+              "memory_strength": 0.70,
+              "uncertainty": 0.18,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_unknown_tracks",
+      "title": "Tracks in the Mud",
+      "description": "Fresh prints in a muddy section of trail. Large, four-toed, with a wide pad. They're bigger than a dog's but the shape is ambiguous — could be wolf, could be something else. The prints are today's.",
+      "scene_type": "forest",
+      "tags": ["tracks", "wolf", "ambiguous", "reading signs", "mud"],
+      "category": "ambiguous",
+      "emotional_value": -0.20,
+      "night_range": [3, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual",  "description": "Large four-toed prints with wide pad, fresh mud — today's", "visible": true},
+        {"sense": "visual",  "description": "Stride length suggests a fast, efficient gait",             "visible": false, "reveal_memory_tag": "wolf"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Follow the tracks — find out what's ahead",
+          "outcome": {
+            "type": "mixed",
+            "description": "The tracks lead to a clearing. At the far edge, a wolf watches from the treeline. It's alone and the light is midday — it turns and vanishes. Your curiosity paid off with useful information.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Wolf Track Reading",
+              "description": "Large four-toed prints, wide pad, efficient stride = wolf. Following tracks safely in daylight gave advance warning of the animal's range.",
+              "category": "contextual",
+              "traits": ["wolf tracks", "four toes wide pad", "stride length = fast mover", "follow in daylight = safe intel"],
+              "hidden_traits": ["claw marks visible in wolf prints unlike dog prints"],
+              "cue_tags": [
+                {"sense": "visual", "description": "four-toed wide-pad print, claw marks visible", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "wolf_prints",   "modifier": "wolf_in_area",   "confidence": 0.80, "discovered": true},
+                {"condition": "time", "value": "fresh_today",   "modifier": "recent_passage", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.20,
+              "confidence": 0.75,
+              "memory_strength": 0.65,
+              "uncertainty": 0.25,
+              "reliability": 0.80
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Note them and move on — fresh tracks mean the animal is close",
+          "outcome": {
+            "type": "success",
+            "description": "You give the area a wide berth. You hear movement in the treeline but nothing approaches. Awareness kept you clear.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Animal Tracks — Stay Alert",
+              "description": "Fresh tracks = the animal is close. Identify what you can and increase alertness. Wide pad four-toed = likely wolf.",
+              "category": "contextual",
+              "traits": ["fresh tracks = animal nearby", "wide pad = large canid", "increase alertness"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "fresh four-toed prints in mud", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "age",  "value": "fresh_today",  "modifier": "animal_nearby",  "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.10,
+              "confidence": 0.78,
+              "memory_strength": 0.60,
+              "uncertainty": 0.22,
+              "reliability": 0.82
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_fog_cliff_path",
+      "title": "Fog on the High Path",
+      "description": "The trail climbs into thick fog. Visibility drops to a few metres. You know the path bends somewhere ahead — but in the fog you can't see where. You can hear wind on your left, which means open air.",
+      "scene_type": "road",
+      "tags": ["fog", "cliff", "visibility", "ambiguous", "high path"],
+      "category": "ambiguous",
+      "emotional_value": -0.35,
+      "night_range": [2, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual",  "description": "Thick fog — visibility only a few metres",                     "visible": true},
+        {"sense": "sound",   "description": "Wind sound louder on your left, suggesting open air or drop",  "visible": true},
+        {"sense": "tactile", "description": "Ground narrows slightly underfoot",                            "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Keep your current pace — stay on the path",
+          "outcome": {
+            "type": "failure",
+            "description": "The path bends right but the fog hides the turn completely. You step off the edge onto loose scree. You slide several metres before stopping against a rock outcrop, badly shaken.",
+            "health_change": -16,
+            "memory_reward": {
+              "title": "Fog on High Paths",
+              "description": "Fog on narrow high paths is dangerous. Wind on one side = open air or drop nearby. Slow to a shuffle in fog near cliff edges — every step must be tested first.",
+              "category": "danger",
+              "traits": ["fog", "high path", "cliff edge risk", "wind = open air warning", "slow down in fog"],
+              "hidden_traits": ["tap the ground ahead with a stick before stepping in fog near cliffs"],
+              "cue_tags": [
+                {"sense": "sound",   "description": "wind louder on one side in fog",   "reliability": 0.82},
+                {"sense": "tactile", "description": "narrowing ground underfoot in fog", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "combined", "value": "fog_plus_wind_on_side", "modifier": "edge_nearby",    "confidence": 0.80, "discovered": true},
+                {"condition": "behavior", "value": "maintain_pace_in_fog",  "modifier": "fall_risk_high","confidence": 0.82, "discovered": true}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.80,
+              "memory_strength": 0.82,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Stop and wait for the fog to thin before continuing",
+          "outcome": {
+            "type": "success",
+            "description": "Twenty minutes later the fog lifts enough to reveal the path clearly. Directly ahead, the trail bends sharply right — and the left side is a ten-metre drop onto rocks. The wait was everything.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Wait Out Fog Near Cliffs",
+              "description": "In fog on high paths, wind on one side = cliff edge possible. Wait for visibility before moving. The ten minutes saved is not worth the risk of the ten-metre drop.",
+              "category": "neutral",
+              "traits": ["fog", "wait it out", "wind cue for cliff", "patience on high paths"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "wind louder on one side in heavy fog on high path", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "combined", "value": "fog_plus_narrow_path_plus_wind", "modifier": "stop_and_wait", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.82,
+              "memory_strength": 0.72,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_still_forest_pool",
+      "title": "Dark Pool in the Hollow",
+      "description": "A shaded hollow holds a perfectly still pool. The water is very dark from tannins but otherwise clear — you can see leaves on the bottom. No visible algae. No smell. You're very thirsty.",
+      "scene_type": "forest",
+      "tags": ["water", "pool", "ambiguous", "tannin", "drink"],
+      "category": "ambiguous",
+      "emotional_value": 0.10,
+      "night_range": [1, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Dark brown-tinted still water — tannins from leaves",     "visible": true},
+        {"sense": "visual", "description": "Leaves clearly visible on pool bottom, no green film",    "visible": true},
+        {"sense": "smell",  "description": "No smell at all — clean air around the pool",             "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Drink it — dark from tannins is not the same as contaminated",
+          "outcome": {
+            "type": "success",
+            "description": "You're right. Tannin-dark water is common in forested hollows and is safe when clear and odourless. The taste is slightly astringent but you feel no ill effect.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Tannin Pool",
+              "description": "Dark brown water in forest hollows is from leaf tannins — not contamination. Safe to drink if: clear, odourless, visible bottom, no algae film.",
+              "category": "food",
+              "traits": ["tannin water", "safe", "dark colour ≠ contaminated", "still water with visible bottom"],
+              "hidden_traits": ["green or milky still water is contaminated — dark-clear is fine"],
+              "cue_tags": [
+                {"sense": "visual", "description": "dark clear water, visible bottom, no film", "reliability": 0.80},
+                {"sense": "smell",  "description": "completely odourless",                       "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "water_state", "value": "dark_clear_odourless", "modifier": "likely_safe",     "confidence": 0.78, "discovered": true},
+                {"condition": "water_state", "value": "green_or_milky",       "modifier": "contaminated",    "confidence": 0.90, "discovered": false}
+              ],
+              "emotional_weight": 0.30,
+              "confidence": 0.72,
+              "memory_strength": 0.65,
+              "uncertainty": 0.28,
+              "reliability": 0.78
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Don't risk it — still water is always suspect",
+          "outcome": {
+            "type": "neutral",
+            "description": "You go on thirsty. The pool was probably fine — tannin-dark forest water often is — but without knowing for sure, you made the safer choice.",
+            "health_change": -4,
+            "memory_reward": {
+              "title": "Tannin Pool Uncertainty",
+              "description": "Dark still forest pool. Avoided it — not sure if safe. Dark colour alone is not always a danger sign in tannin-rich forest hollows.",
+              "category": "ambiguous",
+              "traits": ["tannin water", "uncertain", "still water", "dark colour ambiguous"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [],
+              "emotional_weight": -0.10,
+              "confidence": 0.40,
+              "memory_strength": 0.45,
+              "uncertainty": 0.60,
+              "reliability": 0.55
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_flushing_birds",
+      "title": "Birds Exploding From the Trees",
+      "description": "A mass of birds bursts from the treetops ahead of you without visible cause — all at once, all in the same direction. The forest goes quiet afterward. Something disturbed them that you didn't see.",
+      "scene_type": "forest",
+      "tags": ["birds", "danger warning", "contextual", "ambiguous", "animal"],
+      "category": "ambiguous",
+      "emotional_value": -0.25,
+      "night_range": [3, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Sudden mass bird flush from treetops ahead",           "visible": true},
+        {"sense": "sound",  "description": "Alarm calls and wingbeats, then sudden silence",       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Stop and watch — something caused that flush",
+          "outcome": {
+            "type": "success",
+            "description": "You freeze. Thirty seconds later a large brown shape crosses the trail fifty metres ahead — a bear, unhurried. It vanishes without seeing you. The birds gave you a warning you acted on.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bird Flush = Predator Ahead",
+              "description": "Sudden mass bird flush from forest treetops = large animal disturbed them nearby. Stop and wait before continuing — the animal is usually between you and where the birds went.",
+              "category": "contextual",
+              "traits": ["bird flush warning", "predator indicator", "stop and wait", "alarm calls then silence = serious"],
+              "hidden_traits": ["birds flush from below upward when alarmed by ground predator"],
+              "cue_tags": [
+                {"sense": "visual", "description": "mass sudden bird flush from canopy ahead",       "reliability": 0.82},
+                {"sense": "sound",  "description": "alarm calls then abrupt silence",                "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "bird_behavior", "value": "sudden_mass_flush", "modifier": "large_animal_nearby", "confidence": 0.80, "discovered": true},
+                {"condition": "sound",         "value": "silence_after_flush","modifier": "animal_still_close", "confidence": 0.78, "discovered": true}
+              ],
+              "emotional_weight": -0.25,
+              "confidence": 0.78,
+              "memory_strength": 0.72,
+              "uncertainty": 0.22,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Keep moving — birds flush all the time",
+          "outcome": {
+            "type": "failure",
+            "description": "You walk straight into the bear's path. The encounter is brief and bad. You get away but not without damage. The birds were telling you something and you didn't listen.",
+            "health_change": -14,
+            "memory_reward": {
+              "title": "Ignored Bird Flush Warning",
+              "description": "A sudden mass bird flush from treetops was a predator warning. Ignored it, walked into the animal's path. Stop when birds flush suddenly — they know the forest.",
+              "category": "danger",
+              "traits": ["bird flush ignored", "predator encounter", "listen to animal warnings", "stop and wait"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "sudden mass bird flush ahead", "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "bird_behavior", "value": "sudden_flush", "modifier": "predator_ahead", "confidence": 0.82, "discovered": true}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.82,
+              "memory_strength": 0.80,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_cave_sounds",
+      "title": "Cave with Echoing Sounds",
+      "description": "You're considering sheltering in a promising cave when you hear sounds from inside. Rhythmic, regular. Could be dripping water. Could be breathing. The entrance is dark and you can't see far.",
+      "scene_type": "cave",
+      "tags": ["cave", "shelter", "ambiguous", "animal", "sounds"],
+      "category": "ambiguous",
+      "emotional_value": -0.20,
+      "night_range": [2, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "sound",  "description": "Rhythmic, regular sound from inside the cave — dripping or breathing", "visible": true},
+        {"sense": "smell",  "description": "Cool air from inside — no strong animal smell, but some earthiness",    "visible": true},
+        {"sense": "visual", "description": "Darkness inside — nothing visible beyond a few metres",                "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Go in slowly — it's probably just dripping water",
+          "outcome": {
+            "type": "failure",
+            "description": "The sound is not water. A large shape shifts at the back of the cave. You back out fast but not without being swatted — something large was sleeping there.",
+            "health_change": -14,
+            "memory_reward": {
+              "title": "Occupied Cave — Don't Enter",
+              "description": "Rhythmic sounds from inside a cave could be an animal at rest. Smell check first — animal scent means occupied. Do not enter a cave you cannot see into fully.",
+              "category": "danger",
+              "traits": ["cave occupied", "check smell first", "rhythmic sound = possible breathing", "do not enter blind"],
+              "hidden_traits": ["bears and big cats den in caves with multiple entry points"],
+              "cue_tags": [
+                {"sense": "sound", "description": "rhythmic regular sound from cave interior",  "reliability": 0.72},
+                {"sense": "smell", "description": "animal musk from cave entrance",             "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "smell", "value": "animal_musk_at_entrance", "modifier": "occupied_cave",   "confidence": 0.88, "discovered": true},
+                {"condition": "sound", "value": "rhythmic_from_inside",    "modifier": "possible_animal", "confidence": 0.72, "discovered": true}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.80,
+              "memory_strength": 0.82,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Make noise at the entrance first — if something is inside, let it know you're there",
+          "outcome": {
+            "type": "success",
+            "description": "You clap and shout. Movement inside — something large heads deeper in through a second exit you hadn't seen. You wait, then enter to find an empty warm alcove. The previous occupant relocated.",
+            "health_change": 8,
+            "memory_reward": {
+              "title": "Cave Entry Protocol",
+              "description": "Before entering a dark cave with sounds, make noise at the entrance. Animals prefer to avoid confrontation — give them the chance to leave through another exit.",
+              "category": "neutral",
+              "traits": ["cave safety", "announce yourself", "animals avoid confrontation", "noise before entry"],
+              "hidden_traits": ["most caves used by animals have more than one exit"],
+              "cue_tags": [
+                {"sense": "sound", "description": "sounds from cave interior", "reliability": 0.78}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "noise_at_entrance", "modifier": "animal_likely_leaves", "confidence": 0.78, "discovered": true}
+              ],
+              "emotional_weight": 0.20,
+              "confidence": 0.75,
+              "memory_strength": 0.68,
+              "uncertainty": 0.25,
+              "reliability": 0.80
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_bone_pile_clearing",
+      "title": "Bones in a Clearing",
+      "description": "In a small clearing you find a loose scatter of bones — large ones, from a deer or similar animal. Some are gnawed. The clearing has no recent animal smell, but the bones look relatively clean.",
+      "scene_type": "ruins",
+      "tags": ["bones", "predator", "ambiguous", "clearing", "sign reading"],
+      "category": "ambiguous",
+      "emotional_value": -0.20,
+      "night_range": [3, 15],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual", "description": "Scattered large bones, gnawed, relatively clean and dry", "visible": true},
+        {"sense": "smell",  "description": "Very faint old decay smell — mostly gone",                "visible": true},
+        {"sense": "visual", "description": "No tracks in the clearing, no fresh sign",                "visible": false, "reveal_memory_tag": "sign reading"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Examine the bones — determine how old and what animal made this kill",
+          "outcome": {
+            "type": "success",
+            "description": "The bones are dry and bleached — months old at least. The gnaw marks match a bear's teeth pattern. No fresh sign in the clearing. This site is long abandoned. You camp near here safely.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Reading Kill Site Age",
+              "description": "Dry bleached bones = old kill, months minimum. Fresh kills have wet bones and strong smell. Dry bones + no tracks + no smell = abandoned site, likely safe.",
+              "category": "contextual",
+              "traits": ["kill site ageing", "dry bleached = old", "no smell + no tracks = abandoned", "safe to camp near old kills"],
+              "hidden_traits": ["fresh kill has red-brown staining and wet marrow visible"],
+              "cue_tags": [
+                {"sense": "visual", "description": "dry bleached gnawed bones",                      "reliability": 0.82},
+                {"sense": "smell",  "description": "no significant smell remaining near the bones",  "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "bone_condition", "value": "dry_and_bleached", "modifier": "old_kill_months", "confidence": 0.82, "discovered": true},
+                {"condition": "combined",       "value": "no_smell_no_tracks","modifier": "site_abandoned", "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": -0.10,
+              "confidence": 0.78,
+              "memory_strength": 0.68,
+              "uncertainty": 0.22,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave the area — bone scatters mean predator territory",
+          "outcome": {
+            "type": "neutral",
+            "description": "A cautious response. The site was old and abandoned, so you missed a decent camping spot — but you also missed nothing dangerous.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Bone Scatter — Uncertain",
+              "description": "Found a bone scatter and left without reading the signs. Could have been old and safe. Learning to age kill sites removes unnecessary detours.",
+              "category": "ambiguous",
+              "traits": ["bone scatter", "unread", "uncertain age", "missed information"],
+              "hidden_traits": [],
+              "cue_tags": [],
+              "context_rules": [],
+              "emotional_weight": -0.10,
+              "confidence": 0.35,
+              "memory_strength": 0.40,
+              "uncertainty": 0.65,
+              "reliability": 0.50
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wilted_plant_circle",
+      "title": "Dead Circle in the Forest",
+      "description": "You notice a roughly circular patch of dead and dying plants — about three metres across. Everything inside is wilted and yellow. The surrounding trees are healthy. There is no obvious reason for it.",
+      "scene_type": "forest",
+      "tags": ["plants", "toxic", "circle", "ambiguous", "ground gas"],
+      "category": "ambiguous",
+      "emotional_value": -0.15,
+      "night_range": [4, 15],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "visual",  "description": "Circular dead plant patch, 3m across — surrounding vegetation healthy",  "visible": true},
+        {"sense": "smell",   "description": "Faint sour or sulphur smell when you approach the edge",                "visible": false, "reveal_memory_tag": "toxic ground"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Walk through it — probably just a shaded or dry patch",
+          "outcome": {
+            "type": "failure",
+            "description": "Within the circle you feel lightheaded and your eyes water. You walk out quickly but the headache lasts hours. A natural CO2 or sulphur vent — invisible and heavier than air, pooling at ground level.",
+            "health_change": -12,
+            "memory_reward": {
+              "title": "Ground Gas Vent",
+              "description": "Circular dead plant patches in otherwise healthy forest = possible ground gas vent. CO2 and sulphur are heavier than air and kill plants first. Never walk through.",
+              "category": "danger",
+              "traits": ["ground gas", "CO2 vent", "circular dead patch", "do not enter", "invisible hazard"],
+              "hidden_traits": ["animals collapse and die inside gas vents — avoid any with animal bones"],
+              "cue_tags": [
+                {"sense": "visual", "description": "circular dead plant patch in healthy forest",  "reliability": 0.78},
+                {"sense": "smell",  "description": "sour or sulphur smell at the patch edge",      "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "pattern", "value": "circular_dead_in_healthy", "modifier": "ground_gas_possible", "confidence": 0.78, "discovered": true},
+                {"condition": "smell",   "value": "sulphur_at_edge",          "modifier": "gas_vent_likely",     "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.80,
+              "memory_strength": 0.80,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Approach the edge only — smell the air before going in",
+          "outcome": {
+            "type": "success",
+            "description": "At the edge you catch a faint sulphur note. You back away and circle around it widely. Something is venting from underground — the plants are showing you what the air can't.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Dead Plant Circle — Smell Test",
+              "description": "Circular dead plant patches in healthy forest are a warning. Smell the edge before entering — sulphur or sour smell = ground gas vent. Plants are the early warning system.",
+              "category": "contextual",
+              "traits": ["circular dead patch = gas vent possible", "smell test at edge", "plants warn of gas", "avoid with any sulphur smell"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "circular dead zone in healthy vegetation", "reliability": 0.80},
+                {"sense": "smell",  "description": "sulphur smell at the perimeter",           "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "sign",  "value": "circular_dead_zone",    "modifier": "smell_test_first",       "confidence": 0.82, "discovered": true},
+                {"condition": "smell", "value": "sulphur_at_perimeter",  "modifier": "do_not_enter",           "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.80,
+              "memory_strength": 0.70,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}
