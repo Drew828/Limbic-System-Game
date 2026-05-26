@@ -11,6 +11,7 @@
 # =============================================================================
 
 from __future__ import annotations
+import asyncio
 import sys
 import pygame
 from src.constants import SCREEN_W, SCREEN_H, C
@@ -70,6 +71,9 @@ class Game:
     # -----------------------------------------------------------------------
 
     def run(self) -> None:
+        # ── Original synchronous loop (standalone / desktop) ─────────────────
+        # Kept intact so the standalone build.bat still works.
+        # For the web/Pygbag version, main.py calls run_async() instead.
         while True:
             dt = self._clock.tick(_FPS) / 1000.0
 
@@ -101,6 +105,44 @@ class Game:
                 self._current_state.render(self._screen)
 
             pygame.display.flip()
+
+    async def run_async(self) -> None:
+        # ── Async loop — used by Pygbag web build (and works on desktop too) ──
+        # The only difference from run() is `await asyncio.sleep(0)` at the
+        # end of each frame, which yields control back to the browser's event
+        # loop so the page stays responsive.
+        while True:
+            dt = self._clock.tick(_FPS) / 1000.0
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self._shutdown()
+
+                current = self._current_state
+                if current:
+                    current.handle_event(event)
+
+            current = self._current_state
+            if current:
+                current.update(dt)
+
+                # Transition
+                if current.next_state:
+                    target = current.next_state
+                    data   = current.transition_data
+                    current._clear_transition()
+
+                    if target == "quit":
+                        self._shutdown()
+
+                    self._push_state(target, data)
+
+            self._screen.fill(C["bg"])
+            if self._current_state:
+                self._current_state.render(self._screen)
+
+            pygame.display.flip()
+            await asyncio.sleep(0)  # Required by Pygbag — yields to the browser
 
     # -----------------------------------------------------------------------
     # State machine
