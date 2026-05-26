@@ -40,30 +40,41 @@ class GameOverState(BaseState):
             border_radius=8,
         )
 
+        self._close_btn = Button(
+            rect=(bx, SCREEN_H - 100, bw, 44),
+            text="Close Game",
+            on_click=self._close_game,
+            colour=C["btn_positive"],
+            hover_colour=C["btn_positive_hover"],
+            font_size=FS_LABEL,
+            bold=True,
+            border_radius=8,
+        )
+
     def on_enter(self, data: dict) -> None:
         self._player  = data.get("player")
         self._victory = data.get("victory", False)
 
     def handle_event(self, event: pygame.event.Event) -> None:
-        self._menu_btn.handle_event(event)
+        if self._victory:
+            self._close_btn.handle_event(event)
+        else:
+            self._menu_btn.handle_event(event)
 
     def update(self, dt: float) -> None:
         pass
 
     def render(self, surface: pygame.Surface) -> None:
-        surface.fill(C["bg_night"] if not self._victory else C["bg"])
+        if self._victory:
+            self._render_victory(surface)
+            return
+
+        surface.fill(C["bg_night"])
 
         cx = SCREEN_W // 2
         y  = SCREEN_H // 5
 
-        if self._victory:
-            title = "YOU SURVIVED"
-            col   = C["ltm"]
-        else:
-            title = "YOUR JOURNEY ENDS"
-            col   = C["health_low"]
-
-        ts = self._f_huge.render(title, True, col)
+        ts = self._f_huge.render("YOUR JOURNEY ENDS", True, C["health_low"])
         surface.blit(ts, (cx - ts.get_width() // 2, y))
         y += ts.get_height() + 20
 
@@ -86,7 +97,6 @@ class GameOverState(BaseState):
                 y += ls.get_height() + 6
 
             y += 14
-            # Educational takeaway
             edu_lines = self._education_lines()
             for line in edu_lines:
                 es = self._f_small.render(line, True, C["text_dim"])
@@ -94,6 +104,26 @@ class GameOverState(BaseState):
                 y += es.get_height() + 3
 
         self._menu_btn.render(surface)
+
+    def _render_victory(self, surface: pygame.Surface) -> None:
+        surface.fill(C["bg"])
+        cx = SCREEN_W // 2
+        y  = SCREEN_H // 3
+
+        ts = self._f_huge.render("Congratulations!", True, C["ltm"])
+        surface.blit(ts, (cx - ts.get_width() // 2, y))
+        y += ts.get_height() + 16
+
+        sub = self._f_heading.render("You survived all 5 nights!", True, C["text"])
+        surface.blit(sub, (cx - sub.get_width() // 2, y))
+        y += sub.get_height() + 36
+
+        if self._player:
+            score = self._prog.score(self._player)
+            sc = self._f_label.render(f"Final Score:  {score:,}", True, C["text_dim"])
+            surface.blit(sc, (cx - sc.get_width() // 2, y))
+
+        self._close_btn.render(surface)
 
     def _education_lines(self) -> list[str]:
         """Return contextual neuroscience takeaway lines based on run stats."""
@@ -129,3 +159,6 @@ class GameOverState(BaseState):
 
     def _to_menu(self) -> None:
         self._goto("menu", {})
+
+    def _close_game(self) -> None:
+        self._goto("quit", {})

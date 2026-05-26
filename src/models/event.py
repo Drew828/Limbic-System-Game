@@ -319,6 +319,7 @@ class Encounter:
     tags:        list[str]          # memory tags that are relevant
     relevant_memory_tags: list[str] # specific tags that succeed
     misleading_memory_tags: list[str] = field(default_factory=list)
+    hint_cues: list[str] = field(default_factory=list)  # 1-2 sensory/contextual clues shown to the player
     success_text: str = "You handle the situation correctly."
     failure_text: str = "Something goes wrong."
     partial_text: str = "You manage, but barely."
@@ -339,6 +340,7 @@ class Encounter:
             tags=list(d.get("tags", [])),
             relevant_memory_tags=list(d.get("relevant_memory_tags", [])),
             misleading_memory_tags=list(d.get("misleading_memory_tags", [])),
+            hint_cues=list(d.get("hint_cues", [])),
             success_text=d.get("success_text", ""),
             failure_text=d.get("failure_text", ""),
             partial_text=d.get("partial_text", ""),

@@ -130,6 +130,10 @@ class Button:
     # Helpers
     # -----------------------------------------------------------------------
 
+    def update(self, dt: float) -> None:
+        """Refresh hover state from current mouse position (call each frame)."""
+        self._hovered = self.rect.collidepoint(pygame.mouse.get_pos())
+
     def set_disabled(self, val: bool) -> None:
         self.disabled = val
 

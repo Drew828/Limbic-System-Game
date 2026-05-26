@@ -12,7 +12,8 @@ env/
 
 # PyInstaller build output
 build/
-dist/
+# dist/ is intentionally tracked so the exe can be downloaded from GitHub
+# dist/
 
 # Save files (runtime data, not source)
 saves/

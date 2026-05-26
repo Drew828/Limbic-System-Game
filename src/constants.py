@@ -128,7 +128,7 @@ BAL = {
     "bad_recall_damage":       15,
     "good_recall_heal":        8,
     "no_memory_damage":        20,
-    "total_nights":            15,
+    "total_nights":            5,
 
     # Forgetting curve (Ebbinghaus) — decay scales by memory age
     "decay_fresh_mult":        1.6,   # 0-night-old memories decay faster
@@ -171,11 +171,9 @@ BAL = {
 # Progression Phases
 # ---------------------------------------------------------------------------
 PHASE_CONFIG = {
-    "early":  {"nights": (1, 3),  "label": "Encoding",      "colour": (90, 140, 220)},
-    "mid1":   {"nights": (4, 6),  "label": "Reinforcement",  "colour": (80, 190, 140)},
-    "mid2":   {"nights": (7, 9),  "label": "Contextual",     "colour": (160, 140, 60)},
-    "late1":  {"nights": (10,12), "label": "Complexity",     "colour": (180, 90, 120)},
-    "late2":  {"nights": (13,15), "label": "Mastery",        "colour": (200, 165, 40)},
+    "early":  {"nights": (1, 2),  "label": "Encoding",      "colour": (90, 140, 220)},
+    "mid":    {"nights": (3, 3),  "label": "Reinforcement",  "colour": (80, 190, 140)},
+    "late":   {"nights": (4, 5),  "label": "Mastery",        "colour": (200, 165, 40)},
 }
 
 # ---------------------------------------------------------------------------

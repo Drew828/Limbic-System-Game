@@ -28,7 +28,14 @@ from src.ui.hud import HUD
 from src.ui.components.button import Button
 from src.ui.components.panel import Panel
 from src.ui.components.memory_card import MemoryCard
+from src.ui.components.scroll_view import ScrollView
 from src.ui.journal_ui import JournalUI
+
+
+_MEM_SCROLL_X = 20
+_MEM_SCROLL_Y = HUD_H + 260          # below encounter description area
+_MEM_SCROLL_W = SCREEN_W - 40
+_MEM_SCROLL_H = SCREEN_H - _MEM_SCROLL_Y - 88  # room for improvise btn
 
 
 _SUB_ENCOUNTER  = "encounter"   # show encounter, memory choices
@@ -105,6 +112,12 @@ class TravelState(BaseState):
             border_colour=C["border"],
         )
 
+        # Scrollable memory choice list
+        self._mem_scroll = ScrollView(
+            rect=(_MEM_SCROLL_X, _MEM_SCROLL_Y, _MEM_SCROLL_W, _MEM_SCROLL_H),
+            content_height=_MEM_SCROLL_H,
+        )
+
     # -----------------------------------------------------------------------
     # Lifecycle
     # -----------------------------------------------------------------------
@@ -142,6 +155,7 @@ class TravelState(BaseState):
         self._hud.handle_event(event)
 
         if self._sub == _SUB_ENCOUNTER:
+            self._mem_scroll.handle_event(event)
             self._improvise_btn.handle_event(event)
             for btn in self._mem_btns:
                 btn.handle_event(event)
@@ -224,19 +238,55 @@ class TravelState(BaseState):
         y = self._draw_wrapped(surface, enc.description, pad, y,
                                 SCREEN_W - pad * 2, self._f_body, C["text"], 22) + 16
 
-        # Memory choices — all LTM memories
+        # Hint cues — environmental observations that the right memory would explain
+        if enc.hint_cues:
+            you_notice = self._f_small.render("You notice:", True, C["text_dim"])
+            surface.blit(you_notice, (pad, y));  y += you_notice.get_height() + 4
+            for cue in enc.hint_cues[:2]:
+                line = self._f_small.render(f"  \u2022  {cue}", True, C["uncertain"])
+                surface.blit(line, (pad, y));  y += line.get_height() + 3
+            y += 6
+            journal_tip = self._f_small.render(
+                "Press J to open your journal and check your memory traits.",
+                True, C["text_dim"])
+            surface.blit(journal_tip, (pad, y));  y += journal_tip.get_height() + 10
+
+        # Memory choices — scrollable list of all LTM memories
         if self._ltm_choices:
             mh = self._f_label.render(
                 "Which long-term memory applies here?", True, C["text_dim"])
-            surface.blit(mh, (pad, y));  y += mh.get_height() + 8
+            surface.blit(mh, (pad, _MEM_SCROLL_Y - mh.get_height() - 5))
 
+            # Scroll area background + border
+            pygame.draw.rect(surface, C["bg_dark"],
+                pygame.Rect(_MEM_SCROLL_X, _MEM_SCROLL_Y, _MEM_SCROLL_W, _MEM_SCROLL_H),
+                border_radius=4)
+            pygame.draw.rect(surface, C["border"],
+                pygame.Rect(_MEM_SCROLL_X, _MEM_SCROLL_Y, _MEM_SCROLL_W, _MEM_SCROLL_H),
+                width=1, border_radius=4)
+
+            # Render buttons into scroll content surface
+            cs = self._mem_scroll.content_surface
+            cs.fill((0, 0, 0, 0))
+            scroll_y = self._mem_scroll._scroll_y
+            btn_h  = 38
+            btn_pad = 5
+            bw = _MEM_SCROLL_W - 14
+            local_y = 4
             for btn in self._mem_btns:
-                btn.rect.y = y
-                btn.render(surface)
-                y += btn.rect.height + 6
+                # Screen-space rect used for hover detection
+                s_rect = pygame.Rect(
+                    _MEM_SCROLL_X + 2, _MEM_SCROLL_Y + local_y - scroll_y, bw, btn_h)
+                btn.rect = s_rect
+                btn.update(0)
+                # Render to content surface at local position
+                btn.rect = pygame.Rect(2, local_y, bw, btn_h)
+                btn.render(cs)
+                # Restore screen-space rect for click detection in handle_event
+                btn.rect = s_rect
+                local_y += btn_h + btn_pad
 
-            y += 8
-            # Improvise as a risky fallback
+            self._mem_scroll.render(surface)
             self._improvise_btn.text         = "Improvise (skip memory — risks health loss)"
             self._improvise_btn.colour       = C["btn_danger"]
             self._improvise_btn.hover_colour = C["btn_danger_hover"]
@@ -244,13 +294,13 @@ class TravelState(BaseState):
             # No LTM yet — improvise is the only option
             hint = self._f_small.render(
                 "No long-term memories yet — consolidate some tonight.", True, C["text_dim"])
-            surface.blit(hint, (pad, y));  y += hint.get_height() + 10
+            surface.blit(hint, (pad, _MEM_SCROLL_Y))
             self._improvise_btn.text         = "Improvise (no long-term memory yet)"
             self._improvise_btn.colour       = C["btn"]
             self._improvise_btn.hover_colour = C["btn_hover"]
 
         self._improvise_btn.rect.x = pad
-        self._improvise_btn.rect.y = y
+        self._improvise_btn.rect.y = _MEM_SCROLL_Y + _MEM_SCROLL_H + 4
         self._improvise_btn.render(surface)
 
     def _render_result(self, surface: pygame.Surface) -> None:
@@ -410,12 +460,13 @@ class TravelState(BaseState):
 
     def _rebuild_memory_buttons(self) -> None:
         self._mem_btns = []
-        pad = 40
-        bw  = SCREEN_W - pad * 2
+        bw    = _MEM_SCROLL_W - 14
+        btn_h = 38
+        pad   = 5
 
-        for m in self._ltm_choices[:7]:  # cap at 7 (Miller's Law)
+        for m in self._ltm_choices:  # no cap — scroll handles overflow
             btn = Button(
-                rect=(pad, 0, bw, 38),  # y set in render
+                rect=(0, 0, bw, btn_h),  # position set during render
                 text=f"{m.title}  [{m.mastery_label}]",
                 on_click=self._resolve_with_memory(m),
                 colour=C["btn_gold"],
@@ -424,6 +475,10 @@ class TravelState(BaseState):
                 border_radius=6,
             )
             self._mem_btns.append(btn)
+
+        total_h = max(len(self._mem_btns) * (btn_h + pad) + 12, _MEM_SCROLL_H)
+        self._mem_scroll.resize_content(total_h)
+        self._mem_scroll.scroll_to_top()
 
     # -----------------------------------------------------------------------
     # Journal helpers

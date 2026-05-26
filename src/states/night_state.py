@@ -299,7 +299,9 @@ class NightState(BaseState):
             ("Memories forgotten",     str(self._forgotten_count)),
             ("Total long-term",        str(len(self._player.long_term))),
             ("Nights remaining",
-             str(BAL["total_nights"] - self._player.current_night)),
+             "Final night — prepare your best memories!"
+             if self._player.current_night >= BAL["total_nights"]
+             else str(BAL["total_nights"] - self._player.current_night)),
         ]
         for label, val in rows:
             ls = self._f_label.render(f"{label}:", True, C["text_dim"])

@@ -1,0 +1,1096 @@
+{
+  "_comment": "Bad events: dangers, hazards, and punishing encounters. ~35% of new pool. Health losses range -8 to -22.",
+
+  "events": [
+
+    {
+      "id": "evt_wasp_nest_disturbed",
+      "title": "Hidden Wasp Nest",
+      "description": "The trail narrows between two mossy logs. As you brush past, the air fills instantly with an angry droning. A large grey papery mass hangs just beneath the log to your right — you've already disturbed it.",
+      "scene_type": "forest",
+      "tags": ["wasps", "danger", "insects", "nest"],
+      "category": "danger",
+      "emotional_value": -0.65,
+      "night_range": [1, 10],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Grey papery mass under a log — a wasp nest",            "visible": true},
+        {"sense": "sound",  "description": "Sudden angry droning rising in pitch",                  "visible": true},
+        {"sense": "visual", "description": "Wasps beginning to pour from the nest opening",         "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Run immediately, don't look back",
+          "outcome": {
+            "type": "mixed",
+            "description": "You sprint hard and get distance fast. Still stung several times on your arms and neck before you clear the swarm. The pain fades to a dull burn.",
+            "health_change": -10,
+            "memory_reward": {
+              "title": "Wasp Nest",
+              "description": "Grey papery nest under a log. Disturbing it triggers instant mass attack. Running works but expect stings before you're clear.",
+              "category": "danger",
+              "traits": ["dangerous", "wasps", "log undersides", "papery grey nest", "rapid attack"],
+              "hidden_traits": ["retreating through smoke can break a pursuit"],
+              "cue_tags": [
+                {"sense": "visual", "description": "grey papery mass under logs or in scrub", "reliability": 0.90},
+                {"sense": "sound",  "description": "buzzing louder than normal near a spot",  "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "location", "value": "under_log",     "modifier": "wasp_nest_risk",   "confidence": 0.82, "discovered": true},
+                {"condition": "behavior", "value": "sudden_contact","modifier": "attack_imminent",  "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.85,
+              "memory_strength": 0.78,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Freeze and try to back away slowly",
+          "outcome": {
+            "type": "failure",
+            "description": "Wasps don't negotiate. The slow movement does nothing — the swarm reaches you before you're out of range. You take a punishing number of stings.",
+            "health_change": -20,
+            "memory_reward": {
+              "title": "Wasp Attack",
+              "description": "Wasps attack instantly when nest is disturbed. Freezing or moving slowly is useless — run immediately and put distance between you and the nest.",
+              "category": "danger",
+              "traits": ["wasps", "instant attack", "run immediately", "freezing ineffective"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "sound", "description": "sudden angry high-pitched droning", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "freeze_near_wasps", "modifier": "worsens_outcome", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.80,
+              "confidence": 0.88,
+              "memory_strength": 0.85,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_toxic_plant_contact",
+      "title": "Burning Skin",
+      "description": "You push through a dense section of undergrowth. A few minutes later your forearms start to itch, then burn. The plants you brushed against had slightly waxy, notched leaves — you noticed but didn't think twice.",
+      "scene_type": "forest",
+      "tags": ["plant", "toxic", "skin", "contact", "danger"],
+      "category": "danger",
+      "emotional_value": -0.50,
+      "night_range": [1, 12],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual",  "description": "Waxy, slightly notched leaves on low-growing plants",  "visible": true},
+        {"sense": "tactile", "description": "Faint oiliness on the leaf surface when touched",      "visible": false, "reveal_memory_tag": "toxic plant"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Rinse with water from your supply immediately",
+          "outcome": {
+            "type": "mixed",
+            "description": "Quick action limits the damage. The burning continues for a while but the rinsing dilutes the resin. A painful lesson, but manageable.",
+            "health_change": -8,
+            "memory_reward": {
+              "title": "Toxic Contact Plant",
+              "description": "Waxy notched leaves on low undergrowth — contact causes burning skin reaction. Rinse immediately to limit damage. Avoid plants with oily, waxy leaves in dense undergrowth.",
+              "category": "danger",
+              "traits": ["toxic contact", "waxy leaves", "notched edges", "burning skin", "oily texture"],
+              "hidden_traits": ["reaction worsens significantly in sunlight after contact"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "waxy, notched-edge leaves in dense undergrowth", "reliability": 0.78},
+                {"sense": "tactile", "description": "slight oiliness when touching the leaf surface",  "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "leaf_texture", "value": "waxy_oily",  "modifier": "potential_irritant",  "confidence": 0.80, "discovered": true},
+                {"condition": "treatment",    "value": "rinse_water","modifier": "reduces_reaction",     "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.80,
+              "memory_strength": 0.75,
+              "uncertainty": 0.20,
+              "reliability": 0.82
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Ignore it and keep moving",
+          "outcome": {
+            "type": "failure",
+            "description": "The rash spreads quickly. By the time you stop, both arms are a swollen, weeping mess. You lose hours unable to move properly.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Toxic Contact Plant",
+              "description": "Waxy notched-leaf plant in undergrowth. Contact causes severe reaction — worsens if untreated. Must rinse immediately.",
+              "category": "danger",
+              "traits": ["toxic contact", "waxy leaves", "severe rash", "spreading if ignored"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "waxy notched leaves in dense undergrowth", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "treatment", "value": "none",       "modifier": "reaction_spreads",     "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.85,
+              "memory_strength": 0.82,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wild_boar_charge",
+      "title": "Crashing in the Brush",
+      "description": "Something large is moving fast through the undergrowth to your left. Before you can react, a stocky black shape bursts onto the trail — a wild boar with small dark eyes. It stops, lowers its head, and snorts.",
+      "scene_type": "forest",
+      "tags": ["boar", "danger", "animal", "charge"],
+      "category": "danger",
+      "emotional_value": -0.70,
+      "night_range": [1, 15],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "sound",  "description": "Crashing in the undergrowth, moving fast",           "visible": true},
+        {"sense": "visual", "description": "Stocky black animal, small eyes, lowered head",      "visible": true},
+        {"sense": "smell",  "description": "Strong musky animal scent, different from a bear",   "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Climb the nearest tree immediately",
+          "outcome": {
+            "type": "success",
+            "description": "You scramble up before it commits to the charge. It circles below, snorting aggressively, then loses interest. Boars can't climb — high ground works.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Wild Boar",
+              "description": "Stocky black animal, lowered head = charge incoming. Cannot climb. Getting off the ground immediately is the correct response.",
+              "category": "danger",
+              "traits": ["dangerous", "fast charge", "cannot climb", "get off ground", "aggressive"],
+              "hidden_traits": ["a sow with piglets is more dangerous than a lone boar"],
+              "cue_tags": [
+                {"sense": "sound",  "description": "heavy crashing movement in dense brush", "reliability": 0.82},
+                {"sense": "visual", "description": "lowered head, snorting = charge warning",  "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "lowered_head_snort", "modifier": "charge_imminent",  "confidence": 0.90, "discovered": true},
+                {"condition": "behavior", "value": "climb_escape",       "modifier": "safe",             "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.55,
+              "confidence": 0.85,
+              "memory_strength": 0.78,
+              "uncertainty": 0.15,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Stand your ground and shout",
+          "outcome": {
+            "type": "failure",
+            "description": "It charges without hesitation. You take a glancing blow from its flank that sends you off the trail. Bruised and winded, you lie in the undergrowth as it disappears.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Wild Boar",
+              "description": "Shouting at a charging boar does not deter it. Unlike a bear, it does not bluff. Must get off the ground — boars cannot climb.",
+              "category": "danger",
+              "traits": ["dangerous", "charges without hesitation", "shouting ineffective", "get off ground"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "lowered head before charge", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "stand_ground_shout", "modifier": "charge_continues", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.80,
+              "confidence": 0.88,
+              "memory_strength": 0.85,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_riverbank_quicksand",
+      "title": "Soft Ground at the Bank",
+      "description": "The riverbank looks firm — pale sand, almost white. But when you step onto it, your foot sinks immediately and keeps sinking. Waterlogged sand. You're already knee-deep before you understand what's happening.",
+      "scene_type": "river",
+      "tags": ["quicksand", "mud", "river", "trap", "danger"],
+      "category": "danger",
+      "emotional_value": -0.60,
+      "night_range": [1, 12],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual",  "description": "Very pale, smooth sand at the river edge — no footprints, no vegetation", "visible": true},
+        {"sense": "tactile", "description": "Ground vibrates slightly when you tap it — waterlogged",                  "visible": false, "reveal_memory_tag": "quicksand"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Lean back, spread your weight, and drag yourself out slowly",
+          "outcome": {
+            "type": "mixed",
+            "description": "Panic would bury you deeper. You force yourself to stay calm, lean back to redistribute your weight, and slowly drag each leg free. You emerge exhausted, soaked, and shaken.",
+            "health_change": -12,
+            "memory_reward": {
+              "title": "Saturated Sand Trap",
+              "description": "White smooth sand at riverbend with no tracks or vegetation = saturated and unstable. Do not step on it. If caught: lean back, spread weight, move slowly.",
+              "category": "danger",
+              "traits": ["quicksand", "riverbend", "white smooth sand", "no tracks = warning", "spread weight to escape"],
+              "hidden_traits": ["saturated patches are more common after heavy rain"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "pale smooth sand with no footprints or plants", "reliability": 0.78},
+                {"sense": "tactile", "description": "ground vibrates when tapped near riverbank",    "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "appearance", "value": "smooth_pale_no_tracks","modifier": "unstable_ground_risk","confidence": 0.80, "discovered": true},
+                {"condition": "behavior",   "value": "lean_back_spread",     "modifier": "escape_method",       "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.82,
+              "memory_strength": 0.80,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Thrash and pull yourself out with force",
+          "outcome": {
+            "type": "failure",
+            "description": "Struggling drives you deeper. By the time you stop fighting, you're waist-deep and exhausted. It takes an agonizing half-hour to work yourself free.",
+            "health_change": -22,
+            "memory_reward": {
+              "title": "Quicksand — Don't Struggle",
+              "description": "Struggling in saturated sand makes it worse. Panic = sink deeper. Calm, slow spreading of weight is the only escape.",
+              "category": "danger",
+              "traits": ["quicksand", "struggling worsens", "stay calm", "spread weight"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "pale unmarked riverbank sand", "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "thrash_and_pull", "modifier": "sinks_deeper", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.80,
+              "confidence": 0.90,
+              "memory_strength": 0.88,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_rotten_meat",
+      "title": "Old Cooked Meat",
+      "description": "At your campsite you find remnants of a previous fire and, wrapped in leaves nearby, what looks like cooked meat. It smells faintly off, but you're hungry and the outside looks undamaged.",
+      "scene_type": "camp",
+      "tags": ["food", "meat", "rotten", "danger", "camp"],
+      "category": "danger",
+      "emotional_value": -0.40,
+      "night_range": [2, 10],
+      "weight": 0.9,
+      "cues": [
+        {"sense": "smell",  "description": "Faint sour smell from the wrapped meat — not obvious at first", "visible": true},
+        {"sense": "visual", "description": "Cooked meat wrapped in leaves, exterior undamaged",             "visible": true},
+        {"sense": "visual", "description": "Small flies circling the leaf package",                         "visible": false, "reveal_memory_tag": "food spoilage"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "It looks fine — eat it",
+          "outcome": {
+            "type": "failure",
+            "description": "Within an hour your stomach cramps violently. You lose the meal and more. The outside was deceptive — the meat had spoiled from the inside.",
+            "health_change": -20,
+            "memory_reward": {
+              "title": "Spoiled Meat",
+              "description": "Cooked meat left out in warm weather spoils quickly, inside-out. Outside appearance is unreliable. Trust your nose — even faint sourness means discard.",
+              "category": "danger",
+              "traits": ["spoiled", "meat", "smell test", "inside-out spoilage", "deceptive appearance"],
+              "hidden_traits": ["flies on food = always discard"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "even faint sour or off smell from meat", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "smell", "value": "any_sourness",    "modifier": "discard_food",         "confidence": 0.88, "discovered": true},
+                {"condition": "sign",  "value": "flies_circling",  "modifier": "definitely_spoiled",   "confidence": 0.95, "discovered": false}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.88,
+              "memory_strength": 0.82,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Smell it carefully — if there's any doubt, discard it",
+          "outcome": {
+            "type": "success",
+            "description": "You bring it close and sniff properly. Yes — definitely sour. You discard it. Still hungry, but not sick.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Food Smell Test",
+              "description": "Even faint sourness in cooked meat means it has spoiled. The smell test is more reliable than appearance. When in doubt, discard.",
+              "category": "neutral",
+              "traits": ["smell test", "food safety", "discard if sour", "appearance unreliable"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "smell", "description": "sour or off note in cooked meat", "reliability": 0.92}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.10,
+              "confidence": 0.88,
+              "memory_strength": 0.72,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_thorn_thicket",
+      "title": "The Short Way Through",
+      "description": "The main trail is washed out ahead. You can see a narrow gap through a dense thorn thicket — it would save an hour. But the thorns are long and the gap is tight.",
+      "scene_type": "forest",
+      "tags": ["thorns", "thicket", "hazard", "shortcut"],
+      "category": "danger",
+      "emotional_value": -0.30,
+      "night_range": [1, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual",  "description": "Dense thorn branches, long curved spines, barely passable gap", "visible": true},
+        {"sense": "visual",  "description": "Tufts of animal fur caught on several thorns",                 "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Push through quickly",
+          "outcome": {
+            "type": "failure",
+            "description": "The thorns tear at every exposed surface. By the time you're through, your arms, face, and legs are scored with long cuts. The hour saved cost you badly.",
+            "health_change": -14,
+            "memory_reward": {
+              "title": "Thorn Thicket",
+              "description": "Dense thorn brush is not a shortcut. The cuts are worse than they look mid-push. Go around — always.",
+              "category": "danger",
+              "traits": ["thorns", "cuts", "avoid", "deceptive shortcut", "animal fur on thorns = warning"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "fur caught on thorns — animals avoid this route", "reliability": 0.82}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "animal_fur_on_thorns", "modifier": "avoid_this_route", "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": -0.45,
+              "confidence": 0.82,
+              "memory_strength": 0.72,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Take the long way around",
+          "outcome": {
+            "type": "neutral",
+            "description": "An hour lost on the detour. Nothing gained, but nothing damaged either.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_flash_flood_crossing",
+      "title": "Rising River",
+      "description": "You need to cross. This morning the river was ankle-deep and calm. Now, after hours of distant rain, it's thigh-deep and brown, carrying broken branches. The crossing looks fast.",
+      "scene_type": "river",
+      "tags": ["river", "flood", "crossing", "danger", "water"],
+      "category": "danger",
+      "emotional_value": -0.55,
+      "night_range": [2, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Brown turbid water carrying debris — much higher than before",    "visible": true},
+        {"sense": "sound",  "description": "Loud rushing, much louder than a normal crossing would suggest", "visible": true},
+        {"sense": "smell",  "description": "Earthy, muddy smell from the churned water",                    "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Cross now — it can't get that deep that fast",
+          "outcome": {
+            "type": "failure",
+            "description": "Mid-crossing, a surge hits. You lose your footing and get swept twenty metres downstream before you drag yourself onto a bank, battered and soaked.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Flash Flood River",
+              "description": "Brown water carrying debris = flash flood. Do not cross. The surge comes fast and without warning. Brown turbid water + loud rushing = stay back.",
+              "category": "danger",
+              "traits": ["flash flood", "brown water", "debris = danger", "stay back", "surge without warning"],
+              "hidden_traits": ["rainfall upstream hours earlier causes flash floods with no local rain warning"],
+              "cue_tags": [
+                {"sense": "visual", "description": "brown turbid water, floating debris",    "reliability": 0.92},
+                {"sense": "sound",  "description": "roaring louder than expected river flow","reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "water_color", "value": "brown_turbid",   "modifier": "do_not_cross", "confidence": 0.90, "discovered": true},
+                {"condition": "sign",        "value": "floating_debris","modifier": "flood_risk",   "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Wait for the water to drop before crossing",
+          "outcome": {
+            "type": "success",
+            "description": "Two hours later the water clears and drops. You cross easily. The patience cost time, but watching the flood surge through confirmed the right call.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Flash Flood — Wait It Out",
+              "description": "Brown turbid rivers after rain drop to safe levels within a few hours. Patience is the correct response. Never cross brown turbid water.",
+              "category": "neutral",
+              "traits": ["flash flood", "wait it out", "drops quickly", "patience saves lives"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "brown water with debris", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "water_state", "value": "brown_turbid", "modifier": "wait_to_cross", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.88,
+              "memory_strength": 0.72,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_night_stumble",
+      "title": "Walking After Dark",
+      "description": "You've been walking past nightfall. The trail is uneven and the moonlight is weak through the canopy. You can't see more than a few steps ahead. Every root and rock is a threat.",
+      "scene_type": "road",
+      "tags": ["night", "dark", "stumble", "rocks", "trail"],
+      "category": "danger",
+      "emotional_value": -0.35,
+      "night_range": [1, 15],
+      "weight": 1.2,
+      "cues": [
+        {"sense": "visual", "description": "Trail barely visible — weak filtered moonlight only",  "visible": true},
+        {"sense": "tactile","description": "Ground uneven underfoot, roots and loose rocks",       "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Keep moving — you need to make distance",
+          "outcome": {
+            "type": "failure",
+            "description": "Your foot catches a root. You go down hard on a rocky section of trail — knee and palm taking the worst of it. Moving fast in darkness was the mistake.",
+            "health_change": -12,
+            "memory_reward": {
+              "title": "Night Walking Hazard",
+              "description": "Trails after dark on uneven ground with low visibility are high injury risk. Distance made at night often costs more in falls than it gains.",
+              "category": "danger",
+              "traits": ["night", "low visibility", "fall risk", "stop before dark if possible"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "trail barely visible, canopy blocking moonlight", "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "visibility", "value": "very_low",   "modifier": "slow_down_or_stop", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.45,
+              "confidence": 0.85,
+              "memory_strength": 0.78,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Make camp now — walking blind isn't worth it",
+          "outcome": {
+            "type": "success",
+            "description": "You stop and rest. In the morning the trail is clear and obvious. The distance you would have gained was not worth a broken ankle.",
+            "health_change": 6,
+            "memory_reward": {
+              "title": "Stop Before Dark",
+              "description": "Night travel on uneven trail = high fall risk. Stopping and resting beats the time saved by a bad injury. Make camp before visibility fails.",
+              "category": "neutral",
+              "traits": ["camp early", "night risk", "visibility judgement", "injury prevention"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "fading light, darkening trail", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "visibility", "value": "failing_light", "modifier": "make_camp_soon", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.15,
+              "confidence": 0.85,
+              "memory_strength": 0.65,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_venomous_snake",
+      "title": "Still Shape in the Grass",
+      "description": "You nearly step on it before you see it — a thick-bodied snake coiled on a sun-warmed flat rock at the edge of the trail. Banded pattern, triangular head. It hasn't moved.",
+      "scene_type": "meadow",
+      "tags": ["snake", "venomous", "danger", "meadow", "animal"],
+      "category": "danger",
+      "emotional_value": -0.70,
+      "night_range": [3, 15],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Thick-bodied banded snake coiled on a sun-warmed rock", "visible": true},
+        {"sense": "visual", "description": "Triangular, wide head — not arrow-shaped",               "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Freeze, then back away extremely slowly",
+          "outcome": {
+            "type": "success",
+            "description": "The snake watches with flat, cold eyes. You give it five metres and it loses interest, slowly uncoiling. Snakes don't pursue — they only strike when cornered or stepped on.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Venomous Snake",
+              "description": "Thick body + triangular head = venomous. Freeze and back away slowly. Snakes do not pursue. They strike only when cornered or touched.",
+              "category": "danger",
+              "traits": ["venomous", "triangular head", "thick body", "freeze and back away", "won't pursue"],
+              "hidden_traits": ["sun-warmed rocks are favoured basking spots — always scan before stepping"],
+              "cue_tags": [
+                {"sense": "visual", "description": "triangular wide head, banded or patterned body", "reliability": 0.88},
+                {"sense": "visual", "description": "coiled on sun-warmed flat rock",                 "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "head_shape",   "value": "triangular",     "modifier": "likely_venomous",   "confidence": 0.85, "discovered": true},
+                {"condition": "behavior",     "value": "freeze_and_back","modifier": "safe_response",     "confidence": 0.90, "discovered": true},
+                {"condition": "location",     "value": "sun_warmed_rock","modifier": "snake_likely_here", "confidence": 0.80, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.85,
+              "memory_strength": 0.80,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Try to pin it or move it off the trail",
+          "outcome": {
+            "type": "failure",
+            "description": "The moment you reach forward it strikes — fast, precise, and without warning. The bite is on your hand. The next hours are miserable.",
+            "health_change": -22,
+            "memory_reward": {
+              "title": "Snake Strike",
+              "description": "Never reach toward or attempt to move a venomous snake. The strike is too fast to avoid at close range. Back away — they do not pursue.",
+              "category": "danger",
+              "traits": ["snake", "venomous strike", "do not reach toward", "triangular head", "back away only"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "triangular head = do not approach", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "action", "value": "reach_toward_snake", "modifier": "strike_certain", "confidence": 0.95, "discovered": true}
+              ],
+              "emotional_weight": -0.90,
+              "confidence": 0.92,
+              "memory_strength": 0.90,
+              "uncertainty": 0.08,
+              "reliability": 0.95
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_stagnant_pool_water",
+      "title": "Still Green Pool",
+      "description": "A wide, still pool sits off the trail. The surface is coated with a faint green film. No current, no inflow visible. You're thirsty and it's the only water in an hour's walk.",
+      "scene_type": "forest",
+      "tags": ["water", "stagnant", "contaminated", "danger"],
+      "category": "danger",
+      "emotional_value": -0.30,
+      "night_range": [1, 12],
+      "weight": 1.1,
+      "cues": [
+        {"sense": "visual", "description": "Still water with a faint green surface film",         "visible": true},
+        {"sense": "smell",  "description": "Faint algae and mud smell — slightly stale",          "visible": true},
+        {"sense": "visual", "description": "No visible inflow or outflow — completely still pool", "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Drink it — you're very thirsty",
+          "outcome": {
+            "type": "failure",
+            "description": "The smell should have been enough. Within hours you're doubled over with cramps and nausea. The algae bloom was well-established. You pay for it heavily.",
+            "health_change": -18,
+            "memory_reward": {
+              "title": "Stagnant Algae Pool",
+              "description": "Green surface film + no inflow + stale smell = contaminated. Never drink from still standing water with visible algae or film. Causes severe sickness.",
+              "category": "danger",
+              "traits": ["contaminated", "algae", "stagnant", "never drink", "green film = danger"],
+              "hidden_traits": ["blue-green algae is especially toxic"],
+              "cue_tags": [
+                {"sense": "visual", "description": "green film on still water surface",     "reliability": 0.92},
+                {"sense": "smell",  "description": "stale, algae or sulphur smell",         "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "appearance", "value": "green_film_still",   "modifier": "do_not_drink", "confidence": 0.92, "discovered": true},
+                {"condition": "smell",      "value": "stale_or_algae",     "modifier": "contaminated", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.65,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Don't drink it — the green film is a warning sign",
+          "outcome": {
+            "type": "neutral",
+            "description": "You go thirsty. Better that than what the water would have done.",
+            "health_change": -4,
+            "memory_reward": {
+              "title": "Green Pool Warning",
+              "description": "Green film on still water = algae contamination. Thirst is easier to manage than severe sickness. Never drink from still green water.",
+              "category": "neutral",
+              "traits": ["water safety", "green film = avoid", "algae warning", "standing water danger"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "green surface film on still water", "reliability": 0.92}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.10,
+              "confidence": 0.88,
+              "memory_strength": 0.68,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_dead_branch_fall",
+      "title": "Widowmaker",
+      "description": "You're resting under a large old oak. High above you, a thick dead branch hangs at an angle — partially broken, held only by a strip of bark. The wind picks up slightly.",
+      "scene_type": "forest",
+      "tags": ["branch", "falling", "tree", "overhead danger", "hazard"],
+      "category": "danger",
+      "emotional_value": -0.40,
+      "night_range": [1, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Large dead branch hanging at an angle overhead, bark hanging loose",    "visible": true},
+        {"sense": "sound",  "description": "Faint creaking from above when the wind moves",                        "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Move away from under the branch — this is a classic widowmaker",
+          "outcome": {
+            "type": "success",
+            "description": "Ten minutes later the branch falls with a thunderous crack exactly where you were sitting. The impact craters the ground. You watch from a safe distance, grateful.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Widowmaker Branch",
+              "description": "Dead branches hanging at an angle in old trees are called widowmakers — they fall without warning in wind. Never rest directly under one.",
+              "category": "danger",
+              "traits": ["widowmaker", "dead branch", "hanging at angle", "wind = imminent fall", "never sit under"],
+              "hidden_traits": ["look up before resting under any large old tree"],
+              "cue_tags": [
+                {"sense": "visual", "description": "large dead branch at an angle, loose bark", "reliability": 0.88},
+                {"sense": "sound",  "description": "creaking from overhead in wind",             "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "sign",  "value": "hanging_dead_branch", "modifier": "move_immediately", "confidence": 0.90, "discovered": true},
+                {"condition": "sound", "value": "overhead_creaking",   "modifier": "imminent_fall",    "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.30,
+              "confidence": 0.88,
+              "memory_strength": 0.80,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Stay — it's probably been hanging there for years",
+          "outcome": {
+            "type": "failure",
+            "description": "A gust shakes the tree. The branch cracks and plunges. It clips you as it falls — a glancing blow but heavy enough to put you on the ground.",
+            "health_change": -14,
+            "memory_reward": {
+              "title": "Widowmaker — Don't Wait",
+              "description": "A hanging dead branch that has been there for years can fall at any time. The creak means it's close. Never wait it out.",
+              "category": "danger",
+              "traits": ["widowmaker", "no warning", "move immediately", "wind is the trigger"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "dead branch at angle overhead", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "behavior", "value": "stay_under_widowmaker", "modifier": "fall_risk", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_wolf_pack_road",
+      "title": "Eyes in the Dark",
+      "description": "On a long stretch of road after nightfall you notice glints of reflected light in the treeline. Then another. Then several more. Low to the ground. Moving in parallel with you.",
+      "scene_type": "road",
+      "tags": ["wolf", "pack", "night", "road", "danger"],
+      "category": "danger",
+      "emotional_value": -0.80,
+      "night_range": [5, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual", "description": "Multiple reflected light points, low, in parallel movement in treeline", "visible": true},
+        {"sense": "sound",  "description": "Soft padded movement — more than one animal",                           "visible": true},
+        {"sense": "smell",  "description": "Faint musk on the air from your left",                                  "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Build a fire immediately — wolves fear fire",
+          "outcome": {
+            "type": "success",
+            "description": "You stop and get a fire going fast. The eyes hold for a moment, then withdraw into the dark. The fire holds them at a distance through the night.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Wolf Pack at Night",
+              "description": "Multiple reflected eye-glints in treeline = wolf pack tracking you. Fire deters them reliably. Stop moving and make fire immediately — don't try to outpace them.",
+              "category": "danger",
+              "traits": ["wolf pack", "night tracking", "fire deters", "multiple eyes = pack"],
+              "hidden_traits": ["a lone wolf rarely approaches a fire — packs are bolder"],
+              "cue_tags": [
+                {"sense": "visual", "description": "multiple low eye-glints moving in parallel", "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "number",  "value": "multiple_eyes",  "modifier": "pack_behaviour",  "confidence": 0.85, "discovered": true},
+                {"condition": "counter", "value": "fire",           "modifier": "deters_pack",     "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": -0.50,
+              "confidence": 0.85,
+              "memory_strength": 0.80,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Run for it — you're close to camp",
+          "outcome": {
+            "type": "failure",
+            "description": "Running triggers the instinct. They close the gap instantly. You don't make camp. You make it, barely, but not without paying for the mistake.",
+            "health_change": -22,
+            "memory_reward": {
+              "title": "Wolf Pack — Never Run",
+              "description": "Running from a wolf pack triggers pursuit. They are faster. Do not run. Stop, make fire, make noise. Running is the worst possible response.",
+              "category": "danger",
+              "traits": ["wolf pack", "never run", "triggers pursuit", "fire or noise only"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "multiple low glints tracking you at night", "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "action", "value": "run_from_pack", "modifier": "triggers_pursuit", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.90,
+              "confidence": 0.92,
+              "memory_strength": 0.90,
+              "uncertainty": 0.08,
+              "reliability": 0.95
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_unstable_cave_roof",
+      "title": "Loose Ceiling",
+      "description": "You've moved deeper into the cave to shelter. The rock above is fractured — you can see hairline cracks running across a large slab overhead. Small pieces of grit fall occasionally. The rock looks recent.",
+      "scene_type": "cave",
+      "tags": ["cave", "rockfall", "roof", "collapse", "danger"],
+      "category": "danger",
+      "emotional_value": -0.55,
+      "night_range": [2, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "visual",  "description": "Hairline cracks across a large ceiling slab",         "visible": true},
+        {"sense": "tactile", "description": "Small pieces of grit falling onto your shoulders",    "visible": true},
+        {"sense": "visual",  "description": "Fresh pale edges on the cracks — recent movement",    "visible": false, "reveal_memory_tag": "cave hazard"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Get out of the cave immediately — those cracks are fresh",
+          "outcome": {
+            "type": "success",
+            "description": "You exit quickly. Minutes later a deep crack and grinding sound — the slab shifts. Dust billows from the entrance. You were right to go.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Cave Rockfall Warning",
+              "description": "Fresh pale edges on ceiling cracks = recent movement = imminent. Falling grit = it's already moving. Exit immediately — do not wait to confirm.",
+              "category": "danger",
+              "traits": ["cave hazard", "ceiling cracks", "falling grit = exit now", "fresh pale edges = recent"],
+              "hidden_traits": ["vibration from footsteps can trigger unstable ceilings"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "cracks with pale fresh edges in cave ceiling", "reliability": 0.88},
+                {"sense": "tactile", "description": "grit or dust falling from above",              "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "fresh_cracks_falling_grit", "modifier": "exit_immediately", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.45,
+              "confidence": 0.88,
+              "memory_strength": 0.80,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Stay — caves always drop a bit of grit",
+          "outcome": {
+            "type": "failure",
+            "description": "The slab shifts with a deep groan and drops several inches before jamming against the wall. Fragments of rock hit you from all angles. You crawl out badly cut.",
+            "health_change": -16,
+            "memory_reward": {
+              "title": "Cave Ceiling Collapse",
+              "description": "Falling grit and fresh cracks in a cave ceiling are not minor signs. They mean the rock is already moving. Stay = get hit.",
+              "category": "danger",
+              "traits": ["cave danger", "ceiling collapse", "grit falling = immediate exit", "fresh cracks = active"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "tactile", "description": "grit falling from cave ceiling", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "sign", "value": "falling_grit_cave", "modifier": "danger_imminent", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": -0.75,
+              "confidence": 0.90,
+              "memory_strength": 0.88,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_icy_river_crossing",
+      "title": "Cold River Crossing",
+      "description": "A shallow-looking ford. But when you step in, the cold is a physical shock — far deeper and faster than it appeared. The stones are slick with algae. The far bank looks achievable but you're already shaking.",
+      "scene_type": "river",
+      "tags": ["cold", "river", "crossing", "hypothermia", "danger"],
+      "category": "danger",
+      "emotional_value": -0.50,
+      "night_range": [4, 15],
+      "weight": 1.0,
+      "cues": [
+        {"sense": "tactile", "description": "Shockingly cold water — deeper and faster than it looked",   "visible": true},
+        {"sense": "visual",  "description": "Slick algae-covered stones underfoot",                       "visible": true},
+        {"sense": "visual",  "description": "Water level at thigh-depth mid-crossing",                    "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Push through to the far bank — you're already in",
+          "outcome": {
+            "type": "mixed",
+            "description": "You make it but the cold has taken its toll. Shaking and numb, you drag yourself onto the bank. You need fire immediately. The crossing nearly cost you everything.",
+            "health_change": -14,
+            "memory_reward": {
+              "title": "Cold River Crossing",
+              "description": "Cold moving rivers are much colder than they look. The cold causes rapid loss of muscle control. If you must cross — move fast and have fire ready on the far bank.",
+              "category": "danger",
+              "traits": ["cold water shock", "hypothermia risk", "slick algae stones", "fast crossing only", "fire after"],
+              "hidden_traits": ["glacial melt rivers are cold year-round regardless of air temperature"],
+              "cue_tags": [
+                {"sense": "tactile", "description": "shockingly cold water on entry", "reliability": 0.92}
+              ],
+              "context_rules": [
+                {"condition": "preparation", "value": "fire_on_far_bank", "modifier": "reduces_hypothermia", "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": -0.60,
+              "confidence": 0.82,
+              "memory_strength": 0.78,
+              "uncertainty": 0.18,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Retreat and find a shallower ford",
+          "outcome": {
+            "type": "success",
+            "description": "You back out before committing too deep. An hour upstream you find a knee-deep ford with visible bottom and no algae. The detour was absolutely worth it.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "River Crossing Safety",
+              "description": "Slick algae stones + cold shock + depth = wrong ford. Spend the time to find a better crossing. Visible bottom, knee-depth max, no algae.",
+              "category": "neutral",
+              "traits": ["river crossing", "assess before committing", "look for visible bottom", "algae = slippery"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual",  "description": "algae on stones, no visible bottom",    "reliability": 0.85},
+                {"sense": "tactile", "description": "cold shock on initial entry",            "reliability": 0.90}
+              ],
+              "context_rules": [
+                {"condition": "stone_condition", "value": "algae_covered", "modifier": "high_slip_risk", "confidence": 0.88, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.85,
+              "memory_strength": 0.70,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "evt_stinging_nettles",
+      "title": "Nettles Across the Path",
+      "description": "A dense patch of tall nettles has grown across the narrow trail. They're unmistakable — serrated oval leaves with fine hair-like stingers visible on the stem. The patch is about two metres wide.",
+      "scene_type": "forest",
+      "tags": ["nettles", "stinging", "plant", "hazard", "trail"],
+      "category": "danger",
+      "emotional_value": -0.25,
+      "night_range": [1, 10],
+      "weight": 1.3,
+      "cues": [
+        {"sense": "visual",  "description": "Tall serrated-leaf plants with fine white hair-like stingers on stems", "visible": true},
+        {"sense": "tactile", "description": "The air feels slightly damp here — nettles thrive in moist hollows",    "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Push through bare-armed — it's only a patch",
+          "outcome": {
+            "type": "failure",
+            "description": "The contact is immediate and intense. Both arms erupt in white welts and burning within seconds. You're through in moments but the pain lasts for an hour and limits your movement.",
+            "health_change": -8,
+            "memory_reward": {
+              "title": "Stinging Nettles",
+              "description": "Serrated oval leaves with white hair-like stingers on stems. Contact = intense burn and welts. Cover skin or detour — no other options.",
+              "category": "danger",
+              "traits": ["stinging nettles", "contact burn", "serrated leaves", "hairy stems", "cover skin"],
+              "hidden_traits": ["young boiled nettle leaves are edible — the sting is destroyed by heat"],
+              "cue_tags": [
+                {"sense": "visual", "description": "serrated leaves with white hair-like stingers on stem", "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "coverage", "value": "bare_skin", "modifier": "sting_certain",   "confidence": 0.95, "discovered": true},
+                {"condition": "coverage", "value": "covered",   "modifier": "safe_to_pass",    "confidence": 0.92, "discovered": false}
+              ],
+              "emotional_weight": -0.35,
+              "confidence": 0.90,
+              "memory_strength": 0.75,
+              "uncertainty": 0.10,
+              "reliability": 0.95
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Cover your arms and push through",
+          "outcome": {
+            "type": "success",
+            "description": "The covered skin breaks through without incident. A few minor stings on your ankles, easily ignored. The right preparation matters.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Nettle Defense",
+              "description": "Nettles sting through bare skin only. Covered clothing = safe passage. The stingers cannot penetrate fabric.",
+              "category": "neutral",
+              "traits": ["nettles safe with coverage", "fabric blocks stingers", "preparation beats avoidance"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "hairy-stemmed serrated plants blocking trail", "reliability": 0.95}
+              ],
+              "context_rules": [
+                {"condition": "coverage", "value": "covered_arms", "modifier": "nettles_safe", "confidence": 0.92, "discovered": true}
+              ],
+              "emotional_weight": 0.10,
+              "confidence": 0.88,
+              "memory_strength": 0.65,
+              "uncertainty": 0.12,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}

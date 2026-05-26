@@ -213,17 +213,18 @@ class MemoryPanel:
         y   = self.PANEL_Y + 8
 
         # Header
-        capacity = BAL["stm_capacity"]
+        capacity   = BAL["stm_capacity"]
+        slots_used = sum(2 if m.has_mnemonic else 1 for m in self._memories)
         label = self._f_label.render(
-            f"Short-Term Memory  {len(self._memories)}/{capacity}", True, C["text_dim"])
+            f"Short-Term Memory  {slots_used}/{capacity}", True, C["text_dim"])
         surface.blit(label, (pad, y));  y += label.get_height() + 6
 
         # Capacity bar
         bw = self.PANEL_W - 16
         pygame.draw.rect(surface, C["health_bg"], (pad, y, bw, 5), border_radius=2)
-        fw = int(bw * len(self._memories) / capacity)
+        fw = int(bw * slots_used / capacity)
         if fw > 0:
-            col = C["stm"] if len(self._memories) < capacity else C["health_low"]
+            col = C["stm"] if slots_used < capacity else C["health_low"]
             pygame.draw.rect(surface, col, (pad, y, fw, 5), border_radius=2)
         y += 12
 

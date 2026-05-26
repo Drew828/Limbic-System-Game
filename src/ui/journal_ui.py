@@ -26,6 +26,38 @@ from src.ui.components.scroll_view import ScrollView
 from src.ui.components.memory_card import MemoryCard
 
 
+# ---------------------------------------------------------------------------
+# Memory folder / grouping
+# ---------------------------------------------------------------------------
+
+class MemoryGroup:
+    """A thematic cluster of related memories shown as a collapsible folder."""
+    __slots__ = ("label", "members")
+
+    def __init__(self, label: str, members: list) -> None:
+        self.label   = label
+        self.members = members  # list[Memory]
+
+
+# Theme keyword sets — a memory is placed in the FIRST group whose keywords
+# match any whole word in its title + traits (first-match-wins priority).
+_GROUP_THEMES: list[tuple[str, set[str]]] = [
+    ("Edible",     {"edible", "forage", "safe to eat", "food source",
+                    "safe berries", "nutritious", "harvest", "honey"}),
+    ("Avoid",      {"avoid", "toxic", "poisonous", "irritant", "rash",
+                    "nettles", "thorns", "dangerous plant", "do not touch"}),
+    ("Insects",    {"bees", "wasp", "wasps", "hornet", "bee sting"}),
+    ("Predators",  {"bear", "wolf", "wolves", "boar", "predator", "venomous"}),
+    ("Fire",       {"fire", "flame", "ember", "torch", "campfire"}),
+    ("Water",      {"flood", "stagnant", "crossing", "river", "stream"}),
+    ("Plants",     {"mushroom", "berry", "berries", "fungus", "herb",
+                    "nut", "nuts", "bark", "root"}),
+    ("Navigation", {"cliff", "ridge", "landmark", "navigation", "lost", "fog"}),
+    ("Shelter",    {"shelter", "camp", "bivouac", "warmth"}),
+    ("Weather",    {"rain", "storm", "cold", "frost", "ice", "wind"}),
+]
+
+
 # Column geometry
 _FILTER_W  = 200
 _DETAIL_W  = 320
@@ -70,6 +102,11 @@ class JournalUI:
         # Selection
         self._selected_memory: Memory | None = None
         self._cards: list[MemoryCard]        = []
+
+        # Folder / group state
+        self._group_items:     list                  = []
+        self._expanded_groups: set[str]              = set()
+        self._folder_rects:    dict[str, pygame.Rect] = {}
 
         # Merge mode
         self._pending_merge: MergeCandidate | None = None
@@ -173,6 +210,13 @@ class JournalUI:
             self._apply_filters()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # Folder header click — toggle expand / collapse
+            if event.button == 1:
+                for label, rect in self._folder_rects.items():
+                    if rect.collidepoint(event.pos):
+                        self._toggle_group(label)
+                        return True
+
             # Detect click in search bar area
             sb_rect = pygame.Rect(_FILTER_W + 4, _HEADER_H + 8, _FILTER_W - 8, 28)
             if sb_rect.collidepoint(event.pos):
@@ -264,40 +308,149 @@ class JournalUI:
             surface.blit(ml, (fx, fy))
 
     def _render_grid(self, surface: pygame.Surface) -> None:
+        total_h = self._calc_content_height()
+        if total_h != self._scroll.content_height:
+            self._scroll.resize_content(total_h)
+
         cs = self._scroll.content_surface
         cs.fill((0, 0, 0, 0))
 
-        card_w  = _GRID_W - 24
-        card_h  = 72
-        card_x  = 8
-        card_y  = 8
-        padding = 6
+        card_w   = _GRID_W - 24
+        card_h   = 72
+        folder_h = 44
+        member_h = 64
+        card_x   = 8
+        y        = 8
+        padding  = 6
+        scroll_y = self._scroll._scroll_y
 
-        total_h = card_y + len(self._filtered) * (card_h + padding) + 20
-        if total_h != self._scroll.content_height:
-            self._scroll.resize_content(total_h)
-            cs = self._scroll.content_surface
-            cs.fill((0, 0, 0, 0))
+        self._cards        = []
+        self._folder_rects = {}
 
-        self._cards = []
-        for m in self._filtered:
-            r = pygame.Rect(card_x, card_y, card_w, card_h)
-            card = MemoryCard(r, m, on_click=self._on_card_click)
-            card.selected = (self._selected_memory is not None and
-                             self._selected_memory.id == m.id)
-            card.update(0)
-            card.render(cs)
-            # Build real-rect version for hit-testing (offset by scroll panel pos)
-            real_r = pygame.Rect(
-                _FILTER_W * 2 + card_x,
-                _HEADER_H + card_y - self._scroll._scroll_y,
-                card_w, card_h,
-            )
-            card.rect = real_r
-            self._cards.append(card)
-            card_y += card_h + padding
+        for item in self._group_items:
+            if isinstance(item, MemoryGroup):
+                expanded = item.label in self._expanded_groups
+                r = pygame.Rect(card_x, y, card_w, folder_h)
+                self._render_folder_card(cs, r, item, expanded)
+                # Real-screen rect for hit-testing
+                self._folder_rects[item.label] = pygame.Rect(
+                    _FILTER_W * 2 + card_x,
+                    _HEADER_H + y - scroll_y,
+                    card_w, folder_h,
+                )
+                y += folder_h + padding
+
+                if expanded:
+                    for m in item.members:
+                        mr = pygame.Rect(card_x + 16, y, card_w - 16, member_h)
+                        card = MemoryCard(mr, m, on_click=self._on_card_click)
+                        card.selected = (self._selected_memory is not None and
+                                         self._selected_memory.id == m.id)
+                        card.update(0)
+                        card.render(cs)
+                        real_mr = pygame.Rect(
+                            _FILTER_W * 2 + card_x + 16,
+                            _HEADER_H + y - scroll_y,
+                            card_w - 16, member_h,
+                        )
+                        card.rect = real_mr
+                        self._cards.append(card)
+                        y += member_h + 4
+            else:
+                m = item
+                r = pygame.Rect(card_x, y, card_w, card_h)
+                card = MemoryCard(r, m, on_click=self._on_card_click)
+                card.selected = (self._selected_memory is not None and
+                                 self._selected_memory.id == m.id)
+                card.update(0)
+                card.render(cs)
+                real_r = pygame.Rect(
+                    _FILTER_W * 2 + card_x,
+                    _HEADER_H + y - scroll_y,
+                    card_w, card_h,
+                )
+                card.rect = real_r
+                self._cards.append(card)
+                y += card_h + padding
 
         self._scroll.render(surface)
+
+    # -----------------------------------------------------------------------
+    # Folder / group helpers
+    # -----------------------------------------------------------------------
+
+    def _compute_groups(self, memories: list) -> list:
+        """Cluster memories by shared theme keywords into MemoryGroup folders."""
+        group_members: dict[str, list] = {}
+        assigned: set[str] = set()
+
+        for m in memories:
+            if m.id in assigned:
+                continue
+            # Build a word-set from title + all traits
+            words: set[str] = set()
+            for part in [m.title] + list(m.traits):
+                words.update(part.lower().split())
+
+            for label, keywords in _GROUP_THEMES:
+                if any(kw in words for kw in keywords):
+                    group_members.setdefault(label, []).append(m)
+                    assigned.add(m.id)
+                    break  # first matching group wins
+
+        # Build item list: folders (2+ members) then ungrouped memories
+        grouped_ids: set[str] = set()
+        items: list = []
+        for label, _ in _GROUP_THEMES:
+            members = group_members.get(label, [])
+            if len(members) >= 2:
+                items.append(MemoryGroup(label=label, members=members))
+                grouped_ids.update(m.id for m in members)
+
+        for m in memories:
+            if m.id not in grouped_ids:
+                items.append(m)
+
+        return items
+
+    def _calc_content_height(self) -> int:
+        """Calculate the total scroll content height for the current group items."""
+        card_h   = 72
+        folder_h = 44
+        member_h = 64
+        padding  = 6
+        h = 8
+        for item in self._group_items:
+            if isinstance(item, MemoryGroup):
+                h += folder_h + padding
+                if item.label in self._expanded_groups:
+                    h += len(item.members) * (member_h + 4)
+            else:
+                h += card_h + padding
+        h += 20
+        return max(h, _CONTENT_H)
+
+    def _toggle_group(self, label: str) -> None:
+        if label in self._expanded_groups:
+            self._expanded_groups.discard(label)
+        else:
+            self._expanded_groups.add(label)
+
+    def _render_folder_card(self, surface: pygame.Surface, rect: pygame.Rect,
+                             group: MemoryGroup, expanded: bool) -> None:
+        pygame.draw.rect(surface, (28, 24, 18), rect, border_radius=6)
+        border_col = C["merge_glow"] if expanded else C["border_focus"]
+        pygame.draw.rect(surface, border_col, rect, width=1, border_radius=6)
+        arrow = "▼" if expanded else "▶"
+        text  = f"{arrow}  {group.label.upper()}   —  {len(group.members)} memories"
+        col   = C["merge_glow"] if expanded else C["ltm"]
+        ts    = self._f_label.render(text, True, col)
+        cy    = rect.y + rect.height // 2 - ts.get_height() // 2
+        surface.blit(ts, (rect.x + 12, cy))
+
+    # -----------------------------------------------------------------------
+    # Card interaction
+    # -----------------------------------------------------------------------
 
     def _on_card_click(self, memory: Memory) -> None:
         self._selected_memory = memory
@@ -510,7 +663,8 @@ class JournalUI:
                     any(q in t.lower() for t in m.traits))
             ]
 
-        self._filtered = result
+        self._filtered   = result
+        self._group_items = self._compute_groups(result)
 
     def _rebuild_filter_buttons(self) -> None:
         bw = _FILTER_W - 12

@@ -36,6 +36,14 @@ class ChoiceResult:
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "events")
 
+# Tags too generic to count as meaningful thematic similarity when scoring
+# a wrong-memory attempt against an encounter.
+_GENERIC_ENCOUNTER_TAGS = frozenset({
+    "danger", "danger_extreme", "contextual", "warning",
+    "forest", "meadow", "river", "road", "cave", "camp", "ruins",
+    "night", "dream", "animal", "choice",
+})
+
 
 class EventSystem:
     """
@@ -296,19 +304,36 @@ class EventSystem:
         if memory is None:
             return ("none", encounter.health_on_no_memory, encounter.failure_text)
 
-        # Check if the chosen memory helps or misleads
+        # Normalise tags: lowercase + underscores→spaces so "slow_retreat" matches
+        # the trait "slow retreat".  We also require whole-token containment:
+        # the query tag must appear as a standalone word-sequence in the memory
+        # tag, not merely as a substring of a word (e.g. "danger" must not
+        # match "fire dangerous" as a full token).
+        def _norm(s: str) -> str:
+            return s.lower().replace('_', ' ').strip()
+
+        def _token_match(query: str, target: str) -> bool:
+            """True if every word in `query` appears consecutively in `target`."""
+            q = _norm(query)
+            t = _norm(target)
+            # exact or contained as a whole phrase
+            if q == t:
+                return True
+            # phrase boundary check: ` q ` or q at start/end
+            return (f' {q} ' in f' {t} ')
+
         mem_tags = (
-            [t.lower() for t in memory.traits] +
-            [memory.title.lower()] +
-            [ct.description.lower() for ct in memory.cue_tags]
+            [_norm(t) for t in memory.traits] +
+            [_norm(memory.title)] +
+            [_norm(ct.description) for ct in memory.cue_tags]
         )
 
-        relevant_match  = any(
-            any(tag.lower() in mem_tag for mem_tag in mem_tags)
+        relevant_match = any(
+            any(_token_match(tag, mem_tag) for mem_tag in mem_tags)
             for tag in encounter.relevant_memory_tags
         )
-        mislead_match   = any(
-            any(tag.lower() in mem_tag for mem_tag in mem_tags)
+        mislead_match = any(
+            any(_token_match(tag, mem_tag) for mem_tag in mem_tags)
             for tag in encounter.misleading_memory_tags
         )
 
@@ -328,8 +353,39 @@ class EventSystem:
             return ("failure", encounter.health_on_failure, encounter.failure_text)
 
         else:
-            delta = encounter.health_on_no_memory // 2
-            return ("partial", delta, encounter.partial_text)
+            # No direct match and not actively misleading.
+            # Check whether the memory shares thematic domain with the encounter
+            # (e.g. using a bear memory for a bear-cubs encounter — related, but
+            # not the specific knowledge needed).  Generic location/category tags
+            # are excluded so that every memory doesn't accidentally "match".
+            thematic_tags = [
+                _norm(t) for t in encounter.tags
+                if t.lower() not in _GENERIC_ENCOUNTER_TAGS
+            ]
+            if not thematic_tags:
+                thematic_tags = [_norm(t) for t in encounter.tags]
+
+            thematic_overlap = any(
+                any(_token_match(t, mem_tag) or _token_match(mem_tag, t)
+                    for mem_tag in mem_tags)
+                for t in thematic_tags
+            )
+
+            if thematic_overlap:
+                # Wrong memory but from a related domain — bad but survivable.
+                # Health cost sits between the partial and failure values.
+                delta = max(encounter.health_on_failure,
+                            encounter.health_on_no_memory) // 2
+                return (
+                    "partial", delta,
+                    encounter.partial_text +
+                    " Your instincts weren't entirely wrong —"
+                    " but this needed a more specific memory."
+                )
+            else:
+                # Completely unrelated memory — no applicable knowledge.
+                return ("failure", encounter.health_on_failure,
+                        encounter.failure_text)
 
 
 # ---------------------------------------------------------------------------

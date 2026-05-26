@@ -28,7 +28,7 @@ class ProgressionSystem:
             lo, hi = cfg["nights"]
             if lo <= night <= hi:
                 return phase_id
-        return "late2"
+        return "late"
 
     def phase_label(self, player: PlayerState) -> str:
         return PHASE_CONFIG[self.current_phase(player)]["label"]
@@ -38,11 +38,11 @@ class ProgressionSystem:
 
     def context_rules_visible(self, player: PlayerState) -> bool:
         """Whether context rules are shown in the Journal this phase."""
-        return self.current_phase(player) in ("mid2", "late1", "late2")
+        return self.current_phase(player) in ("mid", "late")
 
     def max_cues_shown(self, player: PlayerState) -> int:
         """How many event cues are shown per event (increases with phase)."""
-        return {"early": 2, "mid1": 3, "mid2": 4, "late1": 5, "late2": 6}[
+        return {"early": 2, "mid": 3, "late": 5}[
             self.current_phase(player)]
 
     # -----------------------------------------------------------------------
@@ -50,9 +50,9 @@ class ProgressionSystem:
     # -----------------------------------------------------------------------
 
     def stm_capacity(self, player: PlayerState) -> int:
-        """STM capacity may be reduced temporarily in late phases."""
+        """STM capacity may be reduced temporarily in late (mastery) phase."""
         base = BAL["stm_capacity"]
-        if self.current_phase(player) == "late1":
+        if self.current_phase(player) == "late":
             return base - 1
         return base
 
@@ -63,11 +63,9 @@ class ProgressionSystem:
         """Nightly decay increases in later phases."""
         base = BAL["memory_decay_per_night"]
         modifiers = {
-            "early":  0.8,
-            "mid1":   0.9,
-            "mid2":   1.0,
-            "late1":  1.15,
-            "late2":  1.10,
+            "early": 0.8,
+            "mid":   1.0,
+            "late":  1.2,
         }
         return base * modifiers.get(self.current_phase(player), 1.0)
 

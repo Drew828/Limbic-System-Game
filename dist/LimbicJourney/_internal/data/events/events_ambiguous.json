@@ -1,0 +1,382 @@
+{
+  "_comment": "Ambiguous / deceptive events. Safe and toxic variants share identical titles, descriptions, and cues — the player cannot tell them apart without prior knowledge. The deceptive variants use requires_absent_tags so they only appear before the player has learned the relevant memory. A mastery_required choice on the safe variant rewards players who have studied the memory.",
+
+  "events": [
+
+    {
+      "_comment": "SAFE BERRIES — adds a mastery choice for experienced players (replaces simple berry event at mid-game)",
+      "id": "evt_berries_experienced",
+      "title": "Berry Bush",
+      "description": "A cluster of bright red berries hangs at eye level beside the trail. They look plump and fresh. Your stomach growls.",
+      "scene_type": "forest",
+      "tags": ["berries", "food", "plant", "red"],
+      "category": "food",
+      "emotional_value": 0.30,
+      "night_range": [3, 15],
+      "weight": 1.0,
+      "prerequisite_memory_tags": ["berries"],
+      "requires_absent_tags": [],
+      "cues": [
+        {"sense": "visual", "description": "Bright red berries on a leafy bush", "visible": true},
+        {"sense": "smell",  "description": "Sweet, mild fruity scent",           "visible": true},
+        {"sense": "visual", "description": "Leaves alternating, stems with fine hairs — a known pattern", "visible": false, "reveal_memory_tag": "berries"}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat the berries",
+          "outcome": {
+            "type": "success",
+            "description": "Sweet and tart. Your energy returns. These are safe — you knew that already.",
+            "health_change": 12,
+            "memory_reward": {
+              "title": "Red Berries",
+              "description": "Bright red berries from a leafy forest bush. Safe and energising. I've eaten them before.",
+              "category": "food",
+              "traits": ["edible", "red", "sweet", "restores energy", "forest berry"],
+              "hidden_traits": ["similar-looking white berries are toxic"],
+              "cue_tags": [
+                {"sense": "visual", "description": "bright red color",          "reliability": 0.85},
+                {"sense": "smell",  "description": "sweet fruity scent",        "reliability": 0.80},
+                {"sense": "visual", "description": "alternating leaves, hairy stems", "reliability": 0.75}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.35,
+              "confidence": 0.85,
+              "memory_strength": 0.75,
+              "uncertainty": 0.15,
+              "reliability": 0.88
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — you're not sure",
+          "outcome": {
+            "type": "neutral",
+            "description": "Old caution dies hard. You move on, stomach empty.",
+            "health_change": 0,
+            "memory_reward": null
+          }
+        },
+        {
+          "id": "c3",
+          "text": "Check the details — compare them to what you remember",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "You recall exactly what made these safe last time — the leaf pattern, the stem texture, the scent. These are the same. You eat confidently and feel strong.",
+            "health_change": 18,
+            "memory_reward": {
+              "title": "Red Berries",
+              "description": "Same berries, confirmed again. Alternating leaves, hairy stems, sweet scent. I know these now.",
+              "category": "food",
+              "traits": ["edible", "red", "sweet", "restores energy", "identified by leaf pattern"],
+              "hidden_traits": ["similar-looking white berries are toxic", "bitter taste means avoid"],
+              "cue_tags": [
+                {"sense": "visual", "description": "bright red color, alternating leaves", "reliability": 0.92},
+                {"sense": "smell",  "description": "sweet fruity scent",                  "reliability": 0.88},
+                {"sense": "tactile","description": "hairy stems, firm berries",           "reliability": 0.80}
+              ],
+              "context_rules": [
+                {"condition": "look", "value": "white_berries_nearby", "modifier": "avoid", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": 0.45,
+              "confidence": 0.92,
+              "memory_strength": 0.88,
+              "uncertainty": 0.08,
+              "reliability": 0.93
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "TOXIC BERRIES — identical appearance to the safe version. Only appears before the player has a berry memory.",
+      "id": "evt_berries_toxic",
+      "title": "Berry Bush",
+      "description": "A cluster of bright red berries hangs at eye level beside the trail. They look plump and fresh. Your stomach growls.",
+      "scene_type": "forest",
+      "tags": ["berries", "food", "plant", "red", "ambiguous"],
+      "category": "ambiguous",
+      "emotional_value": -0.10,
+      "night_range": [1, 8],
+      "weight": 0.9,
+      "prerequisite_memory_tags": [],
+      "requires_absent_tags": ["berries", "red berries"],
+      "cues": [
+        {"sense": "visual", "description": "Bright red berries on a leafy bush", "visible": true},
+        {"sense": "smell",  "description": "Sweet, mild fruity scent",           "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat the berries",
+          "outcome": {
+            "type": "failure",
+            "description": "They taste fine at first — sweet, even. An hour later your stomach cramps, hard. You push through the pain, but you've learned something bitter: looks mean nothing.",
+            "health_change": -20,
+            "memory_reward": {
+              "title": "Toxic Berries",
+              "description": "Bright red berries that looked exactly like edible ones. They were not. Stomach cramps followed. Cannot trust appearance alone.",
+              "category": "ambiguous",
+              "traits": ["toxic", "red", "looks edible", "stomach cramps", "dangerous"],
+              "hidden_traits": ["the real tell is the stem texture — smooth rather than hairy"],
+              "cue_tags": [
+                {"sense": "visual",   "description": "red berries, smooth stems",         "reliability": 0.70},
+                {"sense": "smell",    "description": "sweet scent — unreliable indicator", "reliability": 0.30},
+                {"sense": "tactile",  "description": "smooth stems unlike safe berries",   "reliability": 0.85}
+              ],
+              "context_rules": [
+                {"condition": "stem_texture", "value": "smooth", "modifier": "avoid", "confidence": 0.85, "discovered": false}
+              ],
+              "emotional_weight": -0.70,
+              "confidence": 0.75,
+              "memory_strength": 0.80,
+              "uncertainty": 0.40,
+              "reliability": 0.70
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — you're not sure",
+          "outcome": {
+            "type": "neutral",
+            "description": "Something makes you hesitate. You can't say what — instinct, maybe. You move on hungry but intact.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Unidentified Berries",
+              "description": "Red berries on a forest bush. Couldn't tell if safe. Left them.",
+              "category": "ambiguous",
+              "traits": ["red", "unknown", "might be edible", "uncertain"],
+              "hidden_traits": ["some red berries are toxic — appearance alone is not a reliable guide"],
+              "cue_tags": [
+                {"sense": "visual", "description": "red berries, unknown variety", "reliability": 0.45}
+              ],
+              "context_rules": [],
+              "emotional_weight": -0.10,
+              "confidence": 0.25,
+              "memory_strength": 0.35,
+              "uncertainty": 0.80,
+              "reliability": 0.40
+            }
+          }
+        },
+        {
+          "id": "c3",
+          "text": "Examine carefully — compare them to berries you've eaten before",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "You study the stems — smooth, not hairy. The leaf shape is slightly different. Your memory of safe berries tells you: these are not the same. You walk away. Your knowledge may have just saved your life.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Red Berries",
+              "description": "Memory updated: some red berries have smooth stems and are toxic. The safe ones had hairy stems. Appearance alone is not enough.",
+              "category": "food",
+              "traits": ["edible", "red", "sweet", "hairy stems = safe", "smooth stems = avoid"],
+              "hidden_traits": ["bitter aftertaste is the final warning if you've already eaten"],
+              "cue_tags": [
+                {"sense": "visual",  "description": "stem texture — hairy vs smooth",      "reliability": 0.90},
+                {"sense": "visual",  "description": "leaf shape differences",              "reliability": 0.80},
+                {"sense": "tactile", "description": "hairy stem texture means safe",       "reliability": 0.88}
+              ],
+              "context_rules": [
+                {"condition": "stem_texture", "value": "smooth",   "modifier": "avoid",     "confidence": 0.90, "discovered": true},
+                {"condition": "stem_texture", "value": "hairy",    "modifier": "safe",      "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.30,
+              "confidence": 0.88,
+              "memory_strength": 0.82,
+              "uncertainty": 0.12,
+              "reliability": 0.90
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "SAFE MUSHROOMS — first encounter, edible grey-brown caps.",
+      "id": "evt_mushrooms_simple",
+      "title": "Forest Mushrooms",
+      "description": "A cluster of pale brown mushrooms grows at the base of an old oak. They have broad, flat caps and a faint earthy smell. Your pack is running low on food.",
+      "scene_type": "forest",
+      "tags": ["mushroom", "food", "plant", "forest"],
+      "category": "food",
+      "emotional_value": 0.20,
+      "night_range": [2, 10],
+      "weight": 1.3,
+      "prerequisite_memory_tags": [],
+      "requires_absent_tags": [],
+      "cues": [
+        {"sense": "visual", "description": "Pale brown caps, flat, growing at oak base", "visible": true},
+        {"sense": "smell",  "description": "Faint earthy, woody scent",                 "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat the mushrooms",
+          "outcome": {
+            "type": "success",
+            "description": "Earthy and filling. They sit well in your stomach. After an hour you feel fine — better than fine. You file this away.",
+            "health_change": 10,
+            "memory_reward": {
+              "title": "Brown Oak Mushrooms",
+              "description": "Pale brown flat-capped mushrooms at the base of oaks. Edible. Earthy taste, filling.",
+              "category": "food",
+              "traits": ["edible", "brown", "flat cap", "grows at oaks", "earthy smell"],
+              "hidden_traits": ["similar-looking white-gilled mushrooms can be deadly"],
+              "cue_tags": [
+                {"sense": "visual", "description": "pale brown flat cap at oak base", "reliability": 0.80},
+                {"sense": "smell",  "description": "earthy woody scent",             "reliability": 0.75}
+              ],
+              "context_rules": [
+                {"condition": "location", "value": "oak_base", "modifier": "likely_safe", "confidence": 0.70, "discovered": true}
+              ],
+              "emotional_weight": 0.25,
+              "confidence": 0.68,
+              "memory_strength": 0.55,
+              "uncertainty": 0.35,
+              "reliability": 0.78
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — better to go hungry",
+          "outcome": {
+            "type": "neutral",
+            "description": "You can't be sure. You move on, stomach growling.",
+            "health_change": -3,
+            "memory_reward": {
+              "title": "Unknown Mushrooms",
+              "description": "Pale brown mushrooms at an oak. Didn't eat them — couldn't be certain.",
+              "category": "ambiguous",
+              "traits": ["brown", "oak base", "uncertain", "flat cap"],
+              "hidden_traits": [],
+              "cue_tags": [
+                {"sense": "visual", "description": "flat brown caps, oak base", "reliability": 0.50}
+              ],
+              "context_rules": [],
+              "emotional_weight": -0.05,
+              "confidence": 0.20,
+              "memory_strength": 0.30,
+              "uncertainty": 0.75,
+              "reliability": 0.45
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "_comment": "TOXIC MUSHROOMS — identical description/cues to safe mushrooms. Only appears before the player has a mushroom memory.",
+      "id": "evt_mushrooms_toxic",
+      "title": "Forest Mushrooms",
+      "description": "A cluster of pale brown mushrooms grows at the base of an old oak. They have broad, flat caps and a faint earthy smell. Your pack is running low on food.",
+      "scene_type": "forest",
+      "tags": ["mushroom", "food", "plant", "forest", "ambiguous"],
+      "category": "ambiguous",
+      "emotional_value": -0.15,
+      "night_range": [2, 10],
+      "weight": 0.8,
+      "prerequisite_memory_tags": [],
+      "requires_absent_tags": ["mushroom", "brown oak mushrooms"],
+      "cues": [
+        {"sense": "visual", "description": "Pale brown caps, flat, growing at oak base", "visible": true},
+        {"sense": "smell",  "description": "Faint earthy, woody scent",                 "visible": true}
+      ],
+      "choices": [
+        {
+          "id": "c1",
+          "text": "Eat the mushrooms",
+          "outcome": {
+            "type": "failure",
+            "description": "The first taste is almost identical to what you imagined. But these have white gills underneath — a detail you missed. By evening you're feverish and sick, huddled under a tree. You survive, but barely.",
+            "health_change": -25,
+            "memory_reward": {
+              "title": "Toxic Mushrooms",
+              "description": "Pale brown mushrooms that looked edible. They weren't. White gills underneath — the warning I missed. Do not eat unless certain.",
+              "category": "ambiguous",
+              "traits": ["toxic", "brown", "white gills", "looks edible", "dangerous", "oak base"],
+              "hidden_traits": ["the gills underneath tell safe from toxic — brown gills are safer"],
+              "cue_tags": [
+                {"sense": "visual", "description": "white gills underneath the cap",  "reliability": 0.88},
+                {"sense": "smell",  "description": "slightly acrid undertone",        "reliability": 0.55}
+              ],
+              "context_rules": [
+                {"condition": "gill_color", "value": "white", "modifier": "avoid", "confidence": 0.90, "discovered": true}
+              ],
+              "emotional_weight": -0.75,
+              "confidence": 0.82,
+              "memory_strength": 0.85,
+              "uncertainty": 0.20,
+              "reliability": 0.85
+            }
+          }
+        },
+        {
+          "id": "c2",
+          "text": "Leave them — better to go hungry",
+          "outcome": {
+            "type": "neutral",
+            "description": "You hesitate. Something about them gives you pause — maybe the slightly acrid edge under the earthy smell. You walk away. Good instinct.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Unknown Mushrooms",
+              "description": "Flat brown mushrooms at an oak. Didn't eat them. Smelled slightly off.",
+              "category": "ambiguous",
+              "traits": ["brown", "flat cap", "uncertain", "slightly odd smell"],
+              "hidden_traits": ["these ones were toxic — the acrid hint was the tell"],
+              "cue_tags": [
+                {"sense": "smell",  "description": "slightly acrid undertone under earthy scent", "reliability": 0.60}
+              ],
+              "context_rules": [],
+              "emotional_weight": 0.05,
+              "confidence": 0.25,
+              "memory_strength": 0.35,
+              "uncertainty": 0.70,
+              "reliability": 0.50
+            }
+          }
+        },
+        {
+          "id": "c3",
+          "text": "Turn them over — check the gills before deciding",
+          "mastery_required": 1,
+          "outcome": {
+            "type": "success",
+            "description": "You crouch and lift a cap. White gills. Your memory stirs — that's wrong. The safe ones you've seen had brown-edged gills. You step back. You were about to eat something that would have put you on the ground.",
+            "health_change": 0,
+            "memory_reward": {
+              "title": "Brown Oak Mushrooms",
+              "description": "Updated understanding: safe oak mushrooms have brown-edged gills. White-gilled ones are toxic. Gill colour is the key test.",
+              "category": "food",
+              "traits": ["edible when brown gills", "white gills = avoid", "oak base", "flat brown cap"],
+              "hidden_traits": ["a slightly acrid smell is also a warning sign"],
+              "cue_tags": [
+                {"sense": "visual", "description": "gill colour under the cap — brown vs white", "reliability": 0.92},
+                {"sense": "smell",  "description": "acrid undertone = warning",                 "reliability": 0.72}
+              ],
+              "context_rules": [
+                {"condition": "gill_color", "value": "white",        "modifier": "avoid",  "confidence": 0.92, "discovered": true},
+                {"condition": "gill_color", "value": "brown_edged",  "modifier": "safe",   "confidence": 0.85, "discovered": true}
+              ],
+              "emotional_weight": 0.35,
+              "confidence": 0.90,
+              "memory_strength": 0.85,
+              "uncertainty": 0.10,
+              "reliability": 0.92
+            }
+          }
+        }
+      ]
+    }
+
+  ],
+
+  "encounters": []
+}
